@@ -5,9 +5,9 @@ import java.util.ArrayList;
 public class Spettacolo {
     private int codice;
     private String tipologia;
-    private ArrayList<String> attori;
+    private ArrayList<Attore> attori;
 
-    public Spettacolo(int codice, String tipologia, ArrayList<String> attori) {
+    public Spettacolo(int codice, String tipologia, ArrayList<Attore> attori) {
         this.codice = codice;
         this.tipologia = tipologia;
         this.attori = attori;
@@ -21,8 +21,8 @@ public class Spettacolo {
         return tipologia;
     }
 
-    public ArrayList<String> getAttori() {
-        return attori;
+    public ArrayList<Attore> getAttori() {
+        return new ArrayList<>(attori);
     }
 
     @Override
@@ -45,5 +45,12 @@ public class Spettacolo {
     @Override
     public int hashCode() {
         return codice;
+    }
+
+    public int mediaEta(){
+        int ret = 0;
+        for (Attore a : getAttori())
+            ret += a.getEta();
+        return ret / (getAttori().size());
     }
 }

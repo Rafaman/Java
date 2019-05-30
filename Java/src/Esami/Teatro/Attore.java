@@ -1,7 +1,5 @@
 package Esami.Teatro;
 
-import java.util.Objects;
-
 public class Attore {
     private String nome;
     private int eta;
