@@ -47,7 +47,7 @@ public class Spettacolo {
         return codice;
     }
 
-    public int mediaEta(){
+    public int mediaEta() {
         int ret = 0;
         for (Attore a : getAttori())
             ret += a.getEta();

@@ -65,10 +65,10 @@ public class Gestione {
         return ret;
     }
 
-    public HashMap<String, Integer> attoriImpegnati(String t){
+    public HashMap<String, Integer> attoriImpegnati(String t) {
         HashMap<String, Integer> ret = new HashMap<>();
         for (Spettacolo s : spettacoli) {
-            if (s.getTipologia() == t){
+            if (s.getTipologia() == t) {
                 for (Attore a : s.getAttori()) {
                     if (ret.containsKey(a.getNome()))
                         ret.put(a.getNome(), ret.get(a.getNome()) + 1);
