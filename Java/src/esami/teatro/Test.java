@@ -1,4 +1,4 @@
-package Esami.Teatro;
+package esami.teatro;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -6,8 +6,8 @@ import java.util.HashMap;
 public class Test {
     public static void main(String[] args) {
         int ret1;
-        ArrayList<Spettacolo> ret2 = new ArrayList<>();
-        HashMap<String, Integer> ret3 = new HashMap<>();
+        ArrayList<Spettacolo> ret2;
+        HashMap<String, Integer> ret3;
 
         Attore a1 = new Attore("Sara", 27);
         Attore a2 = new Attore("Laura", 28);

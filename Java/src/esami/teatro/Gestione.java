@@ -1,4 +1,4 @@
-package Esami.Teatro;
+package esami.teatro;
 
 import java.util.ArrayList;
 import java.util.HashMap;

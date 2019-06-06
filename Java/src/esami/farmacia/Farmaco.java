@@ -1,7 +1,6 @@
-package Esami.farmacia;
+package esami.farmacia;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class Farmaco {
     private int codice, codiceProduttore;

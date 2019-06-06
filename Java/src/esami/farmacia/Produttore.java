@@ -1,6 +1,4 @@
-package Esami.farmacia;
-
-import java.util.Objects;
+package esami.farmacia;
 
 public class Produttore {
     private int codice;

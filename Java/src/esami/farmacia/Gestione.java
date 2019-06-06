@@ -1,4 +1,4 @@
-package Esami.farmacia;
+package esami.farmacia;
 
 import java.util.ArrayList;
 
