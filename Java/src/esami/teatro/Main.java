@@ -3,7 +3,7 @@ package esami.teatro;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Test {
+public class Main {
     public static void main(String[] args) {
         int ret1;
         ArrayList<Spettacolo> ret2;
