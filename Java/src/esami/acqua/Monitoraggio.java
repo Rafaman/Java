@@ -1,6 +1,7 @@
 package esami.acqua;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 
 public class Monitoraggio {
@@ -99,5 +100,16 @@ public class Monitoraggio {
             if(f.getNomeCitta() == c.getNome())
                 ret+=f.getPortata();
         return ret;
+    }
+
+    public Citta cittaGold(){
+        HashMap<String, Double> hm = new HashMap<>();
+        double maxPortata = Collections.max(hm.values());
+        for(String s : hm.keySet())
+            if(hm.get(s) == maxPortata)
+                for(Citta c: citta)
+                    if(c.getNome() == s)
+                        return c;
+        return null;
     }
 }
