@@ -1,7 +1,7 @@
-package numeri;
+package Fondamenti.numeri;
 
 /**
- * I numeri razionali.
+ * I Fondamenti.numeri razionali.
  * Sono dotati delle principali funzioni dei razionali,
  * tra le quali somma, differenza, rapporto, reciproco, etc.
  * La classe genera oggetti mutabili
@@ -210,9 +210,9 @@ public class Razionale implements Comparable<Razionale> {
     }
 
     /**
-     * Calcola il massimo comun divisore di due numeri.
+     * Calcola il massimo comun divisore di due Fondamenti.numeri.
      *
-     * @param a uno dei numeri
+     * @param a uno dei Fondamenti.numeri
      * @param b l'altro numero
      * @return il massimo comun divisore di a e b
      */

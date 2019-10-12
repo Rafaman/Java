@@ -1,4 +1,4 @@
-package IO;
+package Fondamenti.IO;
 
 public class IO {
     private static java.util.Scanner keyboard = new java.util.Scanner(System.in);

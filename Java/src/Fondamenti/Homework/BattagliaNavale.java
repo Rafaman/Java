@@ -1,4 +1,4 @@
-package Homework;
+package Fondamenti.Homework;
 
 import javax.swing.*;
 import java.awt.event.*;

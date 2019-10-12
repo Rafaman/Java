@@ -1,4 +1,4 @@
-package esami.telefono;
+package Fondamenti.esami.telefono;
 
 public class Bolletta {
     private int codice, dataEmissione, dataPagamento, importo;

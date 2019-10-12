@@ -1,4 +1,4 @@
-package esami.teatro;
+package Fondamenti.esami.teatro;
 
 import java.util.ArrayList;
 

@@ -1,4 +1,6 @@
-import IO.*;
+package Fondamenti;
+
+import Fondamenti.IO.*;
 
 public class FSA {    // Riconosce le stringhe ab+cc
 

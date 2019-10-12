@@ -1,4 +1,4 @@
-package esami.teatro;
+package Fondamenti.esami.teatro;
 
 public class Attore {
     private String nome;

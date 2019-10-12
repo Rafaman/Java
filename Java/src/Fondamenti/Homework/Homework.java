@@ -1,4 +1,4 @@
-package Homework;
+package Fondamenti.Homework;
 
 public class Homework {
     public static void main(String[] args) {

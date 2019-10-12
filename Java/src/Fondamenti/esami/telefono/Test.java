@@ -1,4 +1,4 @@
-package esami.telefono;
+package Fondamenti.esami.telefono;
 
 public class Test {
     public static void main(String[] args) {

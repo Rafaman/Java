@@ -1,4 +1,4 @@
-package esami.telefono;
+package Fondamenti.esami.telefono;
 
 public class Utenza {
     private String numeroTelefono, categoria, provinciaResidenza;

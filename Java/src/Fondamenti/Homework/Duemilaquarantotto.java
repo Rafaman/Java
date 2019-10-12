@@ -1,4 +1,4 @@
-package Homework;
+package Fondamenti.Homework;
 
 import javax.swing.*;
 import java.awt.*;
@@ -181,7 +181,7 @@ public class Duemilaquarantotto {
 		int[][] mat = convertiInMatriceIntera(getmatrice());
 		for (int i = 0; i < numeroColonne; i++) {
 			for(int j = numeroRighe; j > 1; j--)
-
+				break;
 		}
 	}
 

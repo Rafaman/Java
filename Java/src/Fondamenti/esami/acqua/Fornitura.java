@@ -1,4 +1,4 @@
-package esami.acqua;
+package Fondamenti.esami.acqua;
 
 public class Fornitura {
     private int codice, codiceAcquedotto;

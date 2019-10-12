@@ -1,3 +1,5 @@
+package Fondamenti;
+
 public class MetodiRicorsivi {
     private static boolean ricercaBinaria(int[] v, int x, int imin, int imax) {
         if (imax < imin)

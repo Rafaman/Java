@@ -1,4 +1,4 @@
-package esami.farmacia;
+package Fondamenti.esami.farmacia;
 
 public class Produttore {
     private int codice;
