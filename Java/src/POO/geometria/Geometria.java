@@ -1,4 +1,4 @@
-package POO;
+package POO.geometria;
 
 import java.lang.IllegalArgumentException;
 
@@ -50,15 +50,15 @@ class Triangolo {
         b = vertice2.distanza(vertice3);
         c = vertice3.distanza(vertice1);
         if (a >= b + c || b >= a + c || c >= a + b)
-          throw new IllegalArgumentException("Triangolo inesistente!");
+          throw new IllegalArgumentException("Triangolo2 inesistente!");
         this.vertice1 = vertice1;
         this.vertice2 = vertice2;
         this.vertice3 = vertice3;
     }
     public Triangolo(Triangolo t){
-      vertice1 = t.vertice1;
-      vertice2 = t.vertice2;
-      vertice3 = t.vertice3;
+        vertice1 = t.vertice1;
+        vertice2 = t.vertice2;
+        vertice3 = t.vertice3;
     }
     public Punto[] getVertici() {
         Punto[] ret = new Punto[3];
