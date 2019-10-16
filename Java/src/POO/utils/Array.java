@@ -1,8 +1,9 @@
 package POO.utils;
 
 import Fondamenti.MetodiRicorsivi;
+import POO.esempi.Comparator;
 
-public class Array {
+public class Array{
     public static int ricercaBinaria(int[] v, int e){
         return ricercaBinaria_Indici(v, e, 0, v.length);
     }
@@ -49,6 +50,17 @@ public class Array {
         }
         return ret;
     }
+    public static void selectionSort(Comparable[] v){
+        for(int j = v.length - 1; j > 0; j--){
+            int iMax = 0;
+            for(int i = 0; i <= j; i++)
+                if(v[i].compareTo(v[iMax]) > 0)
+                    iMax = i;
+            Comparable park = v[iMax];
+            v[iMax] = v[j];
+            v[j] = park;
+        }
+    }
     public static int[] mergeSort(int[] v){
         return MetodiRicorsivi.mergeSort(v);
     }
@@ -56,6 +68,16 @@ public class Array {
         int temp = v[a];
         v[a] = v[b];
         v[b] = temp;
+    }
+    public static void insertionSort(Object[] v, Comparator c){
+        for (int i = 0; i < v.length; i++){
+            Object x = v[i];
+            int j = i;
+            while(j > 0 && c.compare(v[j - 1], x) > 0){
+                v[j] = v[j - 1];
+                j--;
+            }
+        }
     }
     public static void main(String[] args) {
         int[] v = {1, 3, 4, 5, 8, 9, 11, 12};

@@ -90,17 +90,11 @@ public class Data {
         if(MESE == 1 && GIORNO == 1 && ANNO == 0)
             throw new IllegalArgumentException("Non esiste giorno precedente");
         else if(MESE == 1 && GIORNO == 1){
-            g1 = durataMese(MESE - 1, ANNO);
-            m1 = MESE - 1;
-            a1 = ANNO - 1;
+            g1 = durataMese(MESE - 1, ANNO); m1 = MESE - 1; a1 = ANNO - 1;
         } else if(GIORNO == 1){
-            g1 = durataMese(MESE - 1, ANNO);
-            m1 = MESE - 1;
-            a1 = ANNO;
+            g1 = durataMese(MESE - 1, ANNO); m1 = MESE - 1; a1 = ANNO;
         } else {
-            g1 = GIORNO - 1;
-            m1 = MESE - 1;
-            a1 = ANNO;
+            g1 = GIORNO - 1; m1 = MESE - 1; a1 = ANNO;
         }
         return new Data(g1, m1, a1);
     }
