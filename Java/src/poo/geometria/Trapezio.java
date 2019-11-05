@@ -1,4 +1,4 @@
-package POO.geometria;
+package poo.geometria;
 
 public class Trapezio extends Figura{
     private final double baseMinore = 7.1, baseMaggiore = 12.4;

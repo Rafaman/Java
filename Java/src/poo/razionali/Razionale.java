@@ -1,4 +1,4 @@
-package POO.razionali;
+package poo.razionali;
 
 class Razionale {
     private int NUMERATORE, DENOMINATORE;

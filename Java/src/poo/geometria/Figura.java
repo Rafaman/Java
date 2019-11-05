@@ -1,4 +1,4 @@
-package POO.geometria;
+package poo.geometria;
 
 public abstract class Figura implements FiguraPiana{
     private double dimensione;

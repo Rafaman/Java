@@ -1,4 +1,4 @@
-package POO.geometria;
+package poo.geometria;
 
 public class Quadrato extends Figura{
     public Quadrato(double lato){

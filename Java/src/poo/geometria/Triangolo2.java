@@ -1,4 +1,4 @@
-package POO.geometria;
+package poo.geometria;
 
 public class Triangolo2 extends Figura {
     private final double a = 5.7, b = 3.1;

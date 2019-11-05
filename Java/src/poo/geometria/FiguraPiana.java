@@ -1,4 +1,4 @@
-package POO.geometria;
+package poo.geometria;
 
 public interface FiguraPiana {
     double perimetro();

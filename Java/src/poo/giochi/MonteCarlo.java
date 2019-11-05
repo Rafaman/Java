@@ -1,4 +1,4 @@
-package POO.giochi;
+package poo.giochi;
 
 public class MonteCarlo {
     private long colpiTot = 0, colpiInterni = 0;

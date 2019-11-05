@@ -1,4 +1,4 @@
-package POO.geometria;
+package poo.geometria;
 
 public class Cerchio extends Figura {
     private final double pi = 3.14;

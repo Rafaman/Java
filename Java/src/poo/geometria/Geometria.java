@@ -1,4 +1,4 @@
-package POO.geometria;
+package poo.geometria;
 
 import java.lang.IllegalArgumentException;
 

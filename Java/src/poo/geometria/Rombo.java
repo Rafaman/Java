@@ -1,4 +1,4 @@
-package POO.geometria;
+package poo.geometria;
 
 public class Rombo extends Figura{
     private final double diagonaleMinore = 7.1, diagonaleMaggiore = 12.4;

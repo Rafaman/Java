@@ -1,8 +1,10 @@
-package POO.date;
+package poo.date;
+
+import poo.util.Comparable;
 
 import java.util.GregorianCalendar;
 
-public class Data {
+public class Data implements Comparable<Data> {
     private final int GIORNO, MESE, ANNO;
     public enum Cosa {G, M, A}
 
@@ -43,6 +45,11 @@ public class Data {
         return GIORNO == data.GIORNO &&
                 MESE == data.MESE &&
                 ANNO == data.ANNO;
+    }
+    public int compareTo(Data d){
+        if(this.ANNO < d.ANNO && this.MESE < d.MESE && this.GIORNO < d.GIORNO) return -1;
+        if(this.equals(d)) return 0;
+        return 1;
     }
     public static boolean isBisestile(int anno){
         if (anno < 0) throw new IllegalArgumentException("Anno non valido");

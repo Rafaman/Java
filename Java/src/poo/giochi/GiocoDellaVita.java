@@ -1,4 +1,4 @@
-package POO.giochi;
+package poo.giochi;
 
 public class GiocoDellaVita {
     private char [][] mappa, nuovaMappa;

@@ -1,4 +1,4 @@
-package POO.esempi;
+package poo.esempi;
 
 import java.util.Scanner;
 

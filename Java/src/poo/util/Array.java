@@ -1,7 +1,7 @@
-package POO.utils;
+package poo.util;
 
 import Fondamenti.MetodiRicorsivi;
-import POO.esempi.Comparator;
+import poo.esempi.Comparator;
 
 public class Array{
     public static int ricercaBinaria(int[] v, int e){
