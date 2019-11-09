@@ -1,5 +1,7 @@
 package poo.agenda;
 
+import java.util.Iterator;
+
 public abstract class AbstractAgenda implements Agenda{
     public String toString(){
         StringBuilder sb = new StringBuilder(500);
@@ -8,9 +10,20 @@ public abstract class AbstractAgenda implements Agenda{
         return sb.toString();
     }
     public boolean equals(Object o){
-        return false; // TODO: 06/11/2019  
+        if(!(o instanceof Agenda)) return false;
+        if(o == null) return false;
+        Agenda a = (Agenda) o;
+        for(Contatto c:this)
+            for(Contatto c1:a)
+                if(!c.equals(c1))
+                    return false;
+        return true;
     }
     public int hashCode(){
-        return 0; // TODO: 06/11/2019  
+        int p = 17;
+        int hash = 0;
+        for(Contatto c:this)
+            hash = hash * p + c.hashCode();
+        return hash;
     }
 }
