@@ -29,7 +29,6 @@ public class EnjoyVector<T> extends AbstractVector<T>{
     public Iterator<T> iterator(){
         return new EnjoyVectorIterator();
     }
-
     private class EnjoyVectorIterator implements Iterator<T>{
         private int cur;
         private boolean rimovibile;

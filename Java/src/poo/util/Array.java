@@ -79,20 +79,52 @@ public class Array{
             }
         }
     }
-    public static void main(String[] args) {
-        int[] v = {1, 3, 4, 5, 8, 9, 11, 12};
-        int[] v2 = {3, 12, 4, 8, 21, 5, 1, 9};
-        System.out.println("Ricerca binaria: " + Array.ricercaBinaria(v, 8));
-        System.out.println("Ricerca lineare: " + Array.ricercaLineare(v, 8));
-        System.out.println("Bubble sort: ");
-        stampaArray(Array.bubbleSort(v2));
-        System.out.println("\nSelection sort: ");
-        stampaArray(Array.selectionSort(v2));
-        System.out.println("\nMerge sort: ");
-        stampaArray(Array.mergeSort(v2));
-    }
     private static void stampaArray(int[] a){
         for(int i = 0; i < a.length; i++)
             System.out.print(a[i] + " ");
+    }
+    public static <T extends Comparable<? super T>> void bubbleSort( Vector<T> v ) {
+        boolean scambi=true;
+        int limite=0, ius=v.size()-1;
+        while( scambi ) {
+            limite=ius; scambi=false;
+            for( int i=1; i<=limite; ++i )
+                if( v.get(i-1).compareTo(v.get(i))>0 ) {
+                    //scambia v(i) con v(i-1)
+                    T park=v.get(i); v.set(i, v.get(i-1));
+                    v.set(i-1,park); scambi=true;
+                    ius=i-1;
+                }
+        }
+    }
+    public static <T> void bubbleSort( Vector<T> v, Comparator<T> c ) {
+        boolean scambi=true;
+        int limite=0, ius=v.size()-1;
+        while( scambi ) {
+            limite=ius; scambi=false;
+            for( int i=1; i<=limite; ++i )
+                if( c.compare(v.get(i-1),v.get(i))>0 ) {
+                    //scambia v(i) con v(i-1)
+                    T park=v.get(i); v.set(i, v.get(i-1));
+                    v.set(i-1,park); scambi=true;
+                    ius=i-1;
+                }
+        }
+    }
+
+    public static void main( String...args ) {
+        Vector<String> vs = new EnjoyVector<>();
+        vs.add("zorro"); vs.add("alba"); vs.add("sera"); vs.add("boreale");
+        vs.add("dado"); vs.add("casa");
+        System.out.println("prima "+vs);
+        //bubbleSort(vs);
+        System.out.println("dopo "+vs);
+        bubbleSort(vs, (s1,s2)->{
+            if( s1.length()<s2.length() ||
+                    s1.length()==s2.length() && s1.compareTo(s2)<0 ) return -1;
+            if( s1.contentEquals(s2) ) return 0;
+            return 1;
+        });
+        System.out.println("dopo ancora "+vs);
     }
 }
