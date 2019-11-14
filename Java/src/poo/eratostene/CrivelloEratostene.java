@@ -28,7 +28,13 @@ public class CrivelloEratostene extends CrivelloAstratto {
 
     public static void main(String[] args) {
         CrivelloEratostene ce = new CrivelloEratostene(100);
+        CrivelloEratostene ce2 = new CrivelloEratostene(102);
         ce.filtra();
+        ce2.filtra();
         System.out.println(ce.crivello);
+        System.out.println(ce2.crivello);
+        System.out.println(ce2.equals(ce));
+        System.out.println(ce.hashCode());
+        System.out.println(ce2.hashCode());
     }
 }

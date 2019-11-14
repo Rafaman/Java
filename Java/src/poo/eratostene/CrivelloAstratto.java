@@ -1,7 +1,5 @@
 package poo.eratostene;
 
-import java.util.Iterator;
-
 public abstract class CrivelloAstratto implements Crivello {
     public String toString(){
         StringBuilder sb = new StringBuilder(500);
@@ -15,9 +13,12 @@ public abstract class CrivelloAstratto implements Crivello {
         return sb.toString();
     }
     public int hashCode(){
-        return 0;// TODO: 05/11/2019
+        return size() * 83;
     }
-    public boolean equals(Object obj) {
-        return false; // TODO: 05/11/2019
+    public boolean equals(Object o) {
+        if(!(o instanceof Crivello)) return false;
+        if(o == this) return true;
+        Crivello c = (Crivello) o;
+        return c.size() == size();
     }
 }
