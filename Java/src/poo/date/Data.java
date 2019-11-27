@@ -1,7 +1,5 @@
 package poo.date;
 
-import poo.util.Comparable;
-
 import java.util.GregorianCalendar;
 
 public class Data implements Comparable<Data> {
