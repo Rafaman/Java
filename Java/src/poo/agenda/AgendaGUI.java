@@ -7,9 +7,9 @@ import java.io.*;
 class FinestraGUI extends JFrame{
 	 private File fileDiSalvataggio=null;
 	 private JMenuItem tipoAL, tipoLL, tipoSet, tipoMap,
-	 				   apri, salva, salvaConNome, esci, about,
+	 				   apri, save, salvaConNome, esci, about,
 	 				   aggiungiContatto, rimuoviContatto,
-	 				   numeroNominativi, svuota,
+	 				   numeroNominativi, clear,
 	 				   telefonoDi, personaDi, elenco;
 	 private String titolo="Agenda GUI";
 	 private String impl=" Map ";
@@ -63,10 +63,10 @@ class FinestraGUI extends JFrame{
          apri=new JMenuItem("Apri");
          apri.addActionListener(listener);
          fileMenu.add(apri);
-         salva=new JMenuItem("Salva");
-         salva.addActionListener(listener);
-         fileMenu.add(salva);
-         salvaConNome=new JMenuItem("Salva con nome");
+         save=new JMenuItem("save");
+         save.addActionListener(listener);
+         fileMenu.add(save);
+         salvaConNome=new JMenuItem("save con nome");
          salvaConNome.addActionListener(listener);
          fileMenu.add(salvaConNome);
          fileMenu.addSeparator();
@@ -78,18 +78,18 @@ class FinestraGUI extends JFrame{
          JMenu commandMenu=new JMenu("Comandi");
          menuBar.add(commandMenu);
          //creazione voci del menu Gestione
-         aggiungiContatto=new JMenuItem("Aggiungi Contatto");
+         aggiungiContatto=new JMenuItem("add Contatto");
          aggiungiContatto.addActionListener(listener);
          commandMenu.add(aggiungiContatto);
-         rimuoviContatto=new JMenuItem("Rimuovi Contatto");
+         rimuoviContatto=new JMenuItem("remove Contatto");
          rimuoviContatto.addActionListener(listener);
          commandMenu.add(rimuoviContatto);
          numeroNominativi=new JMenuItem("Numero nominativi");
          numeroNominativi.addActionListener(listener);
          commandMenu.add(numeroNominativi);
-         svuota=new JMenuItem("Svuota Agenda");
-         svuota.addActionListener(listener);
-         commandMenu.add(svuota);         
+         clear=new JMenuItem("clear Agenda");
+         clear.addActionListener(listener);
+         commandMenu.add(clear);         
          commandMenu.addSeparator();
          telefonoDi=new JMenuItem("Telefono di");
          telefonoDi.addActionListener(listener);
@@ -154,7 +154,7 @@ class FinestraGUI extends JFrame{
     	     addWindowListener( new WindowAdapter() {
     	    	 public void windowClosing(WindowEvent e){
     		       	 if( verificaUscita() ){
-        				 Agenda.aggiungi( 
+        				 Agenda.add( 
         					new Contatto( 
         						 FinestraGUI.this.cognome.toUpperCase(),
         						 FinestraGUI.this.nome.toUpperCase(),
@@ -218,7 +218,7 @@ class FinestraGUI extends JFrame{
      		 }    		 
     		 else if( e.getSource()==ok ){
     			 if( verificaUscita() ){
-    				 Agenda.aggiungi( 
+    				 Agenda.add( 
     					new Contatto( 
     						 FinestraGUI.this.cognome.toUpperCase(),
     						 FinestraGUI.this.nome.toUpperCase(),
@@ -251,7 +251,7 @@ class FinestraGUI extends JFrame{
     	     addWindowListener( new WindowAdapter() {
     	    	 public void windowClosing(WindowEvent e){
     	    		 if( verificaUscita() ){
-    		        	Agenda.rimuovi( 
+    		        	Agenda.remove( 
     		        		new Contatto( 
     		        			FinestraGUI.this.cognome.toUpperCase(),
     		        			FinestraGUI.this.nome.toUpperCase(),
@@ -297,7 +297,7 @@ class FinestraGUI extends JFrame{
      		 }
     		 else if( e.getSource()==ok ){
     			 if( verificaUscita() ){
-    				 Agenda.rimuovi( new Contatto( 
+    				 Agenda.remove( new Contatto( 
     						 FinestraGUI.this.cognome.toUpperCase(),
     						 FinestraGUI.this.nome.toUpperCase(), "","" ));
     				 this.setVisible(false);
@@ -320,7 +320,7 @@ class FinestraGUI extends JFrame{
     	     addWindowListener( new WindowAdapter() {
     		        public void windowClosing(WindowEvent e){
     		       	 if( verificaUscita() ){
-        				 Contatto n=Agenda.cerca( 
+        				 Contatto n=Agenda.search( 
         					new Contatto( 
         						 FinestraGUI.this.cognome.toUpperCase(),
         						 FinestraGUI.this.nome.toUpperCase(),
@@ -329,7 +329,7 @@ class FinestraGUI extends JFrame{
         				 nome.setText("");
            				 if( n!=null )
         					 JOptionPane.showMessageDialog(null, "Telefono della persona cercata: "+
-        						 n.getPrefisso()+"-"+n.getTelefono() );
+        						 n.getPrefisso()+"-"+n.getNumero() );
         				 else
         					 JOptionPane.showMessageDialog(null, "Contatto inesistente!" );    			
     		       	 }
@@ -367,7 +367,7 @@ class FinestraGUI extends JFrame{
     		 else if( e.getSource()==ok ){
     			 if( verificaUscita() ){
     				 Contatto n=
-    				 Agenda.cerca( new Contatto( 
+    				 Agenda.search( new Contatto( 
     						 FinestraGUI.this.cognome.toUpperCase(),
     						 FinestraGUI.this.nome.toUpperCase(), "","" ));
     				 this.setVisible(false);
@@ -375,7 +375,7 @@ class FinestraGUI extends JFrame{
     				 nome.setText("");
     				 if( n!=null )
     					 JOptionPane.showMessageDialog(null, "Telefono della persona cercata: "+
-    						 n.getPrefisso()+"-"+n.getTelefono() );
+    						 n.getPrefisso()+"-"+n.getNumero() );
     				 else
     					 JOptionPane.showMessageDialog(null, "Contatto inesistente!" );    					 
     			 }
@@ -395,7 +395,7 @@ class FinestraGUI extends JFrame{
     	     addWindowListener( new WindowAdapter() {
     		        public void windowClosing(WindowEvent e){
     		       	 if( verificaUscita() ){
-        				 Contatto n=Agenda.cerca(  
+        				 Contatto n=Agenda.search(  
         						 FinestraGUI.this.prefisso,
         						 FinestraGUI.this.telefono );    		       		 
         				 prefisso.setText("");
@@ -440,7 +440,7 @@ class FinestraGUI extends JFrame{
     		 else if( e.getSource()==ok ){
     			 if( verificaUscita() ){
     				 Contatto n=
-    				 Agenda.cerca(
+    				 Agenda.search(
     						 FinestraGUI.this.prefisso,
     						 FinestraGUI.this.telefono );
     				 this.setVisible(false);
@@ -482,12 +482,12 @@ class FinestraGUI extends JFrame{
 	 
 	 private void menuIniziale(){
 		 apri.setEnabled(false);
-		 salva.setEnabled(false);
+		 save.setEnabled(false);
 		 salvaConNome.setEnabled(false);
 		 aggiungiContatto.setEnabled(false);
 		 rimuoviContatto.setEnabled(false);
 		 numeroNominativi.setEnabled(false);
-		 svuota.setEnabled(false);
+		 clear.setEnabled(false);
 		 telefonoDi.setEnabled(false);
 		 personaDi.setEnabled(false);
 		 elenco.setEnabled(false);		 
@@ -499,12 +499,12 @@ class FinestraGUI extends JFrame{
 		 tipoSet.setEnabled(false);
 		 tipoMap.setEnabled(false);
 		 apri.setEnabled(true);
-		 salva.setEnabled(true);
+		 save.setEnabled(true);
 		 salvaConNome.setEnabled(true);
 		 aggiungiContatto.setEnabled(true);
 		 rimuoviContatto.setEnabled(true);
 		 numeroNominativi.setEnabled(true);
-		 svuota.setEnabled(true);
+		 clear.setEnabled(true);
 		 telefonoDi.setEnabled(true);
 		 personaDi.setEnabled(true);
 		 elenco.setEnabled(true);			 
@@ -546,14 +546,14 @@ class FinestraGUI extends JFrame{
   			   Agenda=new AgendaMap();
   			   menuAvviato();
   		   }  		   
-  		   else if( e.getSource()==salva ){
+  		   else if( e.getSource()==save ){
   			   //file chooser
   			   JFileChooser chooser=new JFileChooser();
   			   try{
   				   if( fileDiSalvataggio!=null ){
   					   int ans=JOptionPane.showConfirmDialog(null,"Sovrascrivere "+fileDiSalvataggio.getAbsolutePath()+" ?");
 					   if( ans==0 /*SI*/)
-						   Agenda.salva( fileDiSalvataggio.getAbsolutePath() );
+						   Agenda.save( fileDiSalvataggio.getAbsolutePath() );
 					   else
 						   JOptionPane.showMessageDialog(null,"Nessun salvataggio!");
 					   return;
@@ -563,7 +563,7 @@ class FinestraGUI extends JFrame{
   					   FinestraGUI.this.setTitle(titolo+impl+" - "+fileDiSalvataggio.getName());
   				   }
   				   if( fileDiSalvataggio!=null ){
-  					   Agenda.salva( fileDiSalvataggio.getAbsolutePath() );
+  					   Agenda.save( fileDiSalvataggio.getAbsolutePath() );
   				   }
   				   else
   					   JOptionPane.showMessageDialog(null,"Nessun Salvataggio!");
@@ -580,7 +580,7 @@ class FinestraGUI extends JFrame{
   						   FinestraGUI.this.setTitle(titolo+impl+" - "+fileDiSalvataggio.getName());
   					   }
   				   if( fileDiSalvataggio!=null ){
-  					   Agenda.salva( fileDiSalvataggio.getAbsolutePath() );
+  					   Agenda.save( fileDiSalvataggio.getAbsolutePath() );
   				   }
   				   else
   					   JOptionPane.showMessageDialog(null,"Nessun Salvataggio!");
@@ -600,7 +600,7 @@ class FinestraGUI extends JFrame{
   						   fileDiSalvataggio=chooser.getSelectedFile();
   						   FinestraGUI.this.setTitle(titolo+impl+" - "+fileDiSalvataggio.getName());
   						   try{
-  							   Agenda.ripristina( fileDiSalvataggio.getAbsolutePath() );
+  							   Agenda.load( fileDiSalvataggio.getAbsolutePath() );
   						   }catch(IOException ioe){
   							   JOptionPane.showMessageDialog(null,"Fallimento apertura. File malformato!");
   						   }
@@ -631,8 +631,8 @@ class FinestraGUI extends JFrame{
   		   else if( e.getSource()==numeroNominativi ){
   			   JOptionPane.showMessageDialog(null, "Numero nominativi in agenda: "+Agenda.size());
   		   }
-  		   else if( e.getSource()==svuota ){
-  			   Agenda.svuota();
+  		   else if( e.getSource()==clear ){
+  			   Agenda.clear();
   		   }
   		   else if( e.getSource()==elenco ){
   			   FrameElenco fE=new FrameElenco();

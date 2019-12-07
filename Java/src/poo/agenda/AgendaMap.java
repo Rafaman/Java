@@ -12,7 +12,7 @@ public class AgendaMap extends AbstractAgenda{
 	public void clear(){ tabella.clear(); }
     
 	@Override
-	public void add( Contatto n ){
+	public void add(Contatto n){
 		tabella.put(n, n);
 	}//aggiungi
 	

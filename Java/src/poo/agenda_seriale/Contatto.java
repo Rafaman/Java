@@ -1,12 +1,12 @@
-//file Nominativo.java
+//file Contatto.java
 package poo.agenda_seriale;
 import java.io.*;
 
-public class Nominativo implements Serializable, Comparable<Nominativo>{
+public class Contatto implements Serializable, Comparable<Contatto>{
 	private static final long serialVersionUID = -6944153582493164448L;
 	
 	private String cognome, nome, prefisso, telefono;
-	public Nominativo( String cognome, String nome,
+	public Contatto( String cognome, String nome,
 		String prefisso, String telefono ){
 		this.cognome=cognome; this.nome=nome;
 		this.prefisso=prefisso; this.telefono=telefono;
@@ -17,13 +17,13 @@ public class Nominativo implements Serializable, Comparable<Nominativo>{
 	public String getPrefisso(){ return prefisso; }
 	public String getTelefono(){ return telefono; }
 	public boolean equals( Object o ){
-		if( o==null || !(o instanceof Nominativo) ) return false;
+		if( o==null || !(o instanceof Contatto) ) return false;
 		if( o==this ) return true;
-		Nominativo n=(Nominativo)o;
+		Contatto n=(Contatto)o;
 		return this.cognome.equals(n.cognome) &&
 		       this.nome.equals(n.nome);
 	}//equals
-	public int compareTo( Nominativo n ){
+	public int compareTo( Contatto n ){
 		if( this.cognome.compareTo(n.cognome)<0 ||
 			this.cognome.equals(n.cognome) &&
 		    this.nome.compareTo(n.nome)<0 ) return -1;
@@ -39,4 +39,4 @@ public class Nominativo implements Serializable, Comparable<Nominativo>{
 		int h2=nome.hashCode();
 		return h1*PRIMO+h2;
 	}//hashCode
-}//Nominativo
+}//Contatto

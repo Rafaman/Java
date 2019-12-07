@@ -11,7 +11,7 @@ public abstract class AbstractAgenda implements Agenda{
     }
     public boolean equals(Object o){
         if(!(o instanceof Agenda)) return false;
-        if(o == null) return false;
+        if(o == this) return true;
         Agenda a = (Agenda) o;
         for(Contatto c:this)
             for(Contatto c1:a)

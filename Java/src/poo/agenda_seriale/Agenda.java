@@ -3,12 +3,12 @@ import java.io.*;
 import java.util.Iterator;
 /**
  * Tipo di dato astratto che descrive un'agendina telefonica.
- * Gli elementi sono ti tipo Nominativo. Non si ammettono le
+ * Gli elementi sono ti tipo Contatto. Non si ammettono le
  * omonimie. L'agendina e' supposta mantenuta ordinata
  * per cognome crescente e a parita' di cognome per nome.
  * @author Libero Nigro
  */
-public interface Agendina extends Iterable<Nominativo>{
+public interface Agenda extends Iterable<Contatto>{
 	
 	/**
 	 * Restituisce il numero di nominativi dell'agenda.
@@ -16,7 +16,7 @@ public interface Agendina extends Iterable<Nominativo>{
 	 */
 	default int size() {
 		int conta=0;
-		for( Nominativo n: this ) conta++;
+		for( Contatto n: this ) conta++;
 		return conta;		
 	}//size
 	
@@ -24,40 +24,40 @@ public interface Agendina extends Iterable<Nominativo>{
 	 * Svuota il contenuto dell'agendina.
 	 */
 	default void svuota() {
-		Iterator<Nominativo> it=this.iterator();
+		Iterator<Contatto> it=this.iterator();
 		while( it.hasNext() ) {
 			it.next(); it.remove();
 		}		
 	}//svuota
 	
 	/** 
-	 * Aggiunge un nominativo all'agenda. Non si ammettono
+	 * Aggiunge un Contatto all'agenda. Non si ammettono
 	 * le omonimie. L'aggiunta avviene in ordine alfabetico crescente
 	 * del cognome ed a parita' di cognome in ordine alfabetico del nome.
-	 * @param n il nominativo da aggiungere
+	 * @param n il Contatto da aggiungere
 	 */
-	void aggiungi( Nominativo n );
+	void aggiungi( Contatto n );
 	
 	/**
-	 * Rimuove un nominativo dall'agenda.
-	 * @param n il nominativo da rimuovere dall'agenda.
+	 * Rimuove un Contatto dall'agenda.
+	 * @param n il Contatto da rimuovere dall'agenda.
 	 */
-	default void rimuovi( Nominativo n ) {
-		Iterator<Nominativo> it=this.iterator();
+	default void rimuovi( Contatto n ) {
+		Iterator<Contatto> it=this.iterator();
 		while( it.hasNext() ) {
-			Nominativo x=it.next();
+			Contatto x=it.next();
 			if( x.equals(n) ){ it.remove(); break; }
 			if( x.compareTo(n)>0 ) break;
 		}		
 	}//rimuovi
 	
 	/**
-	 * Cerca un nominativo uguale ad n.
-	 * @param n il nominativo da cercare, significativo solo per nome e cognome.
-	 * @return il nominativo dell'agenda uguale ad n o null se n non e' in agenda.
+	 * Cerca un Contatto uguale ad n.
+	 * @param n il Contatto da cercare, significativo solo per nome e cognome.
+	 * @return il Contatto dell'agenda uguale ad n o null se n non e' in agenda.
 	 */
-	default Nominativo cerca( Nominativo n ) {
-		for( Nominativo x: this ){
+	default Contatto cerca( Contatto n ) {
+		for( Contatto x: this ){
 			if( x.equals(n) ) return x;
 			if( x.compareTo(n)>0 ) break;
 		}		
@@ -65,13 +65,13 @@ public interface Agendina extends Iterable<Nominativo>{
 	}//cerca
 	
 	/**
-	 * Cerca un nominativo nell'agenda, di assegnato prefisso e numero di telefono.
+	 * Cerca un Contatto nell'agenda, di assegnato prefisso e numero di telefono.
 	 * @param prefisso 
 	 * @param telefono
-	 * @return il nominativo trovato o null
+	 * @return il Contatto trovato o null
 	 */
-	default Nominativo cerca( String prefisso, String telefono ) {
-		for( Nominativo x: this )
+	default Contatto cerca( String prefisso, String telefono ) {
+		for( Contatto x: this )
 			if( x.getPrefisso().equals(prefisso) &&
 				x.getTelefono().equals(telefono) ) return x;
 		return null;		
@@ -85,7 +85,7 @@ public interface Agendina extends Iterable<Nominativo>{
 	default void salva(String nomeFile) throws IOException{
 		ObjectOutputStream oos=
 				new ObjectOutputStream(new FileOutputStream(nomeFile));
-			for( Nominativo n: this ) 
+			for( Contatto n: this ) 
 				oos.writeObject(n);
 			oos.close();		
 	}//salva
@@ -98,11 +98,11 @@ public interface Agendina extends Iterable<Nominativo>{
 	default void ripristina(String nomeFile) throws IOException{
 		ObjectInputStream ois=
 				new ObjectInputStream(new FileInputStream(nomeFile));
-		Nominativo n=null;
+		Contatto n=null;
 		this.svuota();
 		for(;;){
 			try{
-				n=(Nominativo)ois.readObject();
+				n=(Contatto)ois.readObject();
 			}catch(ClassNotFoundException e){
 				throw new IOException();
 			}catch(ClassCastException cce){
