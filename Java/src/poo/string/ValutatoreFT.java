@@ -63,7 +63,7 @@ public class ValutatoreFT {
 				System.out.println(espr+"="+ris);
 			}catch( RuntimeException e ) {
 				//e.printStackTrace();
-				System.out.println("Espressione "+espr+" maformata!");
+				System.out.println("Espressione "+espr+" malformata!");
 			}
 		}
 		System.out.println("Bye.");
