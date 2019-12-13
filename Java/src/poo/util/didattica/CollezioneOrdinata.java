@@ -1,4 +1,4 @@
-package poo.util;
+package poo.util.didattica;
 
 public interface CollezioneOrdinata<T extends Comparable<? super T>> extends Iterable<T> {
     int size();

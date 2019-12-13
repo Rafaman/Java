@@ -2,6 +2,8 @@ package poo.util;
 
 import Fondamenti.MetodiRicorsivi;
 import poo.esempi.Comparator;
+import poo.util.didattica.EnjoyVector;
+import poo.util.didattica.Vector;
 
 public class Array{
     public static int ricercaBinaria(int[] v, int e){

@@ -1,5 +1,7 @@
 package poo.util;
 
+import poo.util.didattica.Mat;
+
 public final class Matrix{
 	private Matrix(){}
 

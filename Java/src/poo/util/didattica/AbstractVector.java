@@ -1,4 +1,4 @@
-package poo.util;
+package poo.util.didattica;
 
 import java.util.Iterator;
 

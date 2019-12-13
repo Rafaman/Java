@@ -1,4 +1,4 @@
-package poo.util;
+package poo.util.didattica;
 
 public final class Mat{
 	public static final double EPSILON=1.0E-10;
