@@ -1,12 +1,18 @@
 package poo.polinomio;
 
+<<<<<<< HEAD
 import java.util.ArrayList;
 import java.util.Iterator;
+=======
+import java.util.Iterator;
+import java.util.ArrayList;
+>>>>>>> 6fe7f2954168e2d88b5e449ddd5d7c3f8336066b
 import java.util.ListIterator;
 
 public class PolinomioList extends PolinomioAstratto {
     private ArrayList<Monomio> lista = new ArrayList<>();
 
+<<<<<<< HEAD
     public PolinomioList(){}
     public PolinomioList(Polinomio p){
         for(Monomio m:p)
@@ -18,6 +24,21 @@ public class PolinomioList extends PolinomioAstratto {
     }
     @Override
     public void add(Monomio m) {
+=======
+    public PolinomioList(){};
+    public PolinomioList( Polinomio p ){
+        for( Monomio m: p ) add(m);
+    }
+    @Override
+    public PolinomioList crea(){ //covarianza tipo di ritorno
+        return new PolinomioList();
+    }//create
+    public Iterator<Monomio> iterator(){
+        return lista.iterator();
+    }//iterator
+    public int size(){ return lista.size(); }
+    public void add( Monomio m ){
+>>>>>>> 6fe7f2954168e2d88b5e449ddd5d7c3f8336066b
         if( m.getCoeff() == 0 ) return;
         ListIterator<Monomio> lit = lista.listIterator();
         boolean flag = false;
@@ -39,6 +60,7 @@ public class PolinomioList extends PolinomioAstratto {
         }
         if( !flag ) lit.add( m );
     }
+<<<<<<< HEAD
     @Override
     public Polinomio crea() {
         return new PolinomioList();
@@ -47,4 +69,6 @@ public class PolinomioList extends PolinomioAstratto {
     public Iterator<Monomio> iterator() {
         return lista.iterator();
     }
+=======
+>>>>>>> 6fe7f2954168e2d88b5e449ddd5d7c3f8336066b
 }

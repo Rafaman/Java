@@ -1,5 +1,6 @@
 package poo.esempi;
-import poo.util.*;
+import poo.util.didattica.EnjoyVector;
+import poo.util.didattica.Vector;
 
 public class MainEnjoyString {
     public static void main(String[] args) {

@@ -11,6 +11,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Scanner;
+import java.util.StringTokenizer;
 import java.util.regex.*;
 
 public class Applicazione {
@@ -36,7 +37,7 @@ public class Applicazione {
                         throw new IllegalArgumentException();
                 }
                 break;
-            }catch(Exception e){
+            }catch(IllegalArgumentException iae){
                 System.out.println("Opzione errata!");
             }
         }
@@ -61,7 +62,7 @@ public class Applicazione {
                 System.out.println("Scelta errata!");
             }
         }
-        sc.reset();
+        sc = new Scanner(System.in);
         /*
         * Inserimento polinomi da tastiera e controllo validità
         * */
@@ -83,17 +84,23 @@ public class Applicazione {
         /*
          * Riconoscimento dei polinomi
          * */
-        polinomio = riconosciPolinomio(espressione1, 2);
-        polinomio2 = riconosciPolinomio(espressione2, 2);
+        polinomio = riconosciPolinomio(espressione1, tipo);
+        polinomio2 = riconosciPolinomio(espressione2, tipo);
         /*
          * Stampa operazioni polinomi
          * */
+        System.out.println("Polinomi: " + polinomio + ", " + polinomio2);
         System.out.println("Addizione: " + polinomio.add(polinomio2));
         System.out.println("Moltiplicazione: " + polinomio.mul(polinomio2));
         System.out.println("Derivate: " + polinomio.derivata() + ", " + polinomio2.derivata());
     }
     private static Polinomio riconosciPolinomio(String s, int t){
-        Polinomio polinomio = new PolinomioList();
+        Polinomio polinomio;
+        int coefficiente = 0, grado = -1;
+        boolean segno = false, esponente = false;
+        /*
+        * Controllo scelta tipo polinomio dell' utente
+        * */
         if(t == 1)
             polinomio = new PolinomioLL();
         else if(t == 2)
@@ -101,35 +108,27 @@ public class Applicazione {
         else if(t == 3)
             polinomio = new PolinomioList();
         else polinomio = new PolinomioMap();
-
-        String number = "-?[0-9]+";
-        int coefficiente = 0, grado = -1;
-
-        Pattern pattern = Pattern.compile(number);
-        Matcher matcher = pattern.matcher(s);
-        while(matcher.find()) {
-            /*
-            * Riconoscimento coefficiente e grado
-            * */
-            if(matcher.start() != 0 && s.charAt(matcher.start() - 1) == '^')
-                grado = Integer.parseInt(s.substring(matcher.start(), matcher.end()));
-            else
-                coefficiente = Integer.parseInt(s.substring(matcher.start(), matcher.end()));
-            /*
-            * Creazione monomi e aggiunta al polinomio
-            * */
-            if (grado != -1) {
+        /*
+        * Inizio del riconoscimento dei monomi
+        * */
+        StringTokenizer st = new StringTokenizer(s, "=-x^", true);
+        while(st.hasMoreTokens()){
+            String corrente = st.nextToken();
+            if (corrente.equals("x")) grado = 1;
+            else if (corrente.equals("-")) segno = true;
+            else if (corrente.equals("^")) esponente = true;
+            else if (Character.isDigit(corrente.charAt(0)))
+                if (segno) {
+                    coefficiente = Integer.parseInt("-" + corrente);
+                    segno = false;
+                } else if (esponente) {
+                    grado = Integer.parseInt(corrente);
+                    esponente = false;
+                } else coefficiente = Integer.parseInt(corrente);
+            else grado = 0;
+            if(grado != -1) {
                 polinomio.add(new Monomio(coefficiente, grado));
-                coefficiente = 0;
-                grado = -1;
-            } else if (matcher.end() != s.length() && s.charAt(matcher.end()) == 'x') {
-                if (s.charAt(matcher.end() + 1) != '^') {
-                    polinomio.add(new Monomio(coefficiente, 1));
-                    coefficiente = 0;
-                }
-            } else {
-                polinomio.add(new Monomio(coefficiente, 0));
-                coefficiente = 0;
+                coefficiente = 0; grado = -1;
             }
         }
         return polinomio;
@@ -139,7 +138,8 @@ public class Applicazione {
         * Match tra regex e la stringa inserita dall' utente
         * */
         if(s.equals("")) throw new IllegalArgumentException();
-        String polinomioControllo = "[\\-?[0-9]+[[x]^[0-9]]*]*";
+        else if(s.contains("++") || s.contains("--")) throw new IllegalArgumentException();
+        String polinomioControllo = "[\\-?[[0-9]+]s[[x]^[0-9]]*]*";
         if(!Pattern.matches(polinomioControllo, s)) throw new IllegalArgumentException();
     }
 }

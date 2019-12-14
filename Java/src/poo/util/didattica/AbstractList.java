@@ -1,4 +1,4 @@
-package poo.util;
+package poo.util.didattica;
 
 public abstract class AbstractList<T> implements List<T> {
     public String toString(){

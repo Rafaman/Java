@@ -1,6 +1,6 @@
 package poo.sistema;
 
-import poo.util.Mat;
+import poo.util.didattica.Mat;
 
 public class Gauss extends Sistema{
 	protected double [][]a;
