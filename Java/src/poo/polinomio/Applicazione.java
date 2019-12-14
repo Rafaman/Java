@@ -62,7 +62,7 @@ public class Applicazione {
                 System.out.println("Scelta errata!");
             }
         }
-        sc = new Scanner(System.in);
+        sc.nextLine();
         /*
         * Inserimento polinomi da tastiera e controllo validità
         * */
@@ -96,7 +96,7 @@ public class Applicazione {
     }
     private static Polinomio riconosciPolinomio(String s, int t){
         Polinomio polinomio;
-        int coefficiente = 0, grado = -1;
+        int coefficiente = 0, grado = 0;
         boolean segno = false, esponente = false;
         /*
         * Controllo scelta tipo polinomio dell' utente
@@ -111,26 +111,32 @@ public class Applicazione {
         /*
         * Inizio del riconoscimento dei monomi
         * */
-        StringTokenizer st = new StringTokenizer(s, "=-x^", true);
+        StringTokenizer st = new StringTokenizer(s, "=+-x^", true);
         while(st.hasMoreTokens()){
             String corrente = st.nextToken();
-            if (corrente.equals("x")) grado = 1;
-            else if (corrente.equals("-")) segno = true;
+            if (corrente.equals("-")) segno = true;
             else if (corrente.equals("^")) esponente = true;
-            else if (Character.isDigit(corrente.charAt(0)))
+            if (Character.isDigit(corrente.charAt(0)))
                 if (segno) {
                     coefficiente = Integer.parseInt("-" + corrente);
                     segno = false;
                 } else if (esponente) {
                     grado = Integer.parseInt(corrente);
+                    polinomio.add(new Monomio(coefficiente, grado));
+                    coefficiente = 0; grado = 0;
                     esponente = false;
                 } else coefficiente = Integer.parseInt(corrente);
-            else grado = 0;
-            if(grado != -1) {
+            else if (corrente.equals("x")){
+                grado = 1;
+                if(segno && coefficiente == 0) coefficiente = -1;
+                else if(coefficiente == 0) coefficiente = 1;
+            }
+            else if (!esponente){
                 polinomio.add(new Monomio(coefficiente, grado));
-                coefficiente = 0; grado = -1;
+                coefficiente = 0; grado = 0;
             }
         }
+        polinomio.add(new Monomio(coefficiente, grado));
         return polinomio;
     }
     private static void valutaEspressione(String s){
@@ -193,6 +199,7 @@ class GUI{
             salvaConNome.addActionListener(listenerFileMenu);
             fileMenu.add(salvaConNome);
             carica = new JMenuItem("Carica");
+            carica.addActionListener(listenerFileMenu);
             fileMenu.add(carica);
             esci = new JMenuItem("Esci");
             esci.addActionListener(listenerFileMenu);
@@ -229,10 +236,8 @@ class GUI{
                                 JOptionPane.showMessageDialog(null,"Nessun savetaggio!");
                             return;
                         }
-                        if( fileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION ){
+                        if( fileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION )
                             fileSalvataggio = fileChooser.getSelectedFile();
-                            Finestra.this.setTitle(fileSalvataggio.getName());
-                        }
                         if( fileSalvataggio != null ){
                             save( fileSalvataggio.getAbsolutePath() );
                         }
@@ -241,6 +246,21 @@ class GUI{
                     }catch( Exception exc ){
                         exc.printStackTrace();
                     }
+                } else if(e.getSource() == salvaConNome){
+                    JFileChooser chooser=new JFileChooser();
+                    try{
+                        if( chooser.showSaveDialog(null)==JFileChooser.APPROVE_OPTION )
+                            fileSalvataggio=chooser.getSelectedFile();
+                        if( fileSalvataggio!=null ){
+                            save( fileSalvataggio.getAbsolutePath() );
+                        }
+                        else
+                            JOptionPane.showMessageDialog(null,"Nessun savetaggio!");
+                    }catch( Exception exc ){
+                        exc.printStackTrace();
+                    }
+                } else if(e.getSource() == carica){
+
                 }
             }
         }
@@ -252,6 +272,8 @@ class GUI{
         }
         private static void save(String s) throws IOException {
             PrintWriter pw = new PrintWriter(new FileWriter(s));
+            pw.println(s);
+            pw.close();
         }
     }
 }

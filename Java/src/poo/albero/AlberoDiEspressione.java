@@ -70,5 +70,6 @@ public class AlberoDiEspressione {
                     break;
             }
         }
+        return 0;
     }
 }
