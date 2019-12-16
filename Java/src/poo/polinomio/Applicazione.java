@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.StringTokenizer;
 import java.util.regex.*;
@@ -94,7 +95,7 @@ public class Applicazione {
         System.out.println("Moltiplicazione: " + polinomio.mul(polinomio2));
         System.out.println("Derivate: " + polinomio.derivata() + ", " + polinomio2.derivata());
     }
-    private static Polinomio riconosciPolinomio(String s, int t){
+    public static Polinomio riconosciPolinomio(String s, int t){
         Polinomio polinomio;
         int coefficiente = 0, grado = 0;
         boolean segno = false, esponente = false;
@@ -139,7 +140,7 @@ public class Applicazione {
         polinomio.add(new Monomio(coefficiente, grado));
         return polinomio;
     }
-    private static void valutaEspressione(String s){
+    public static void valutaEspressione(String s){
         /*
         * Match tra regex e la stringa inserita dall' utente
         * */
@@ -153,37 +154,36 @@ public class Applicazione {
 class GUI{
     public static void creaGUI(){
         EventQueue.invokeLater(() -> {
-            JFrame frame = null;
-            try {
-                frame = new Finestra();
-            } catch(Exception e){
-                System.out.println("Look and Feel errato!");
-            }
-            assert frame != null;
+            JFrame frame = new Finestra();
             frame.setVisible(true);
         });
     }
     static class Finestra extends JFrame{
-        private JMenuItem salva, salvaConNome, carica, esci;
+        private ArrayList<Polinomio> polinomi = new ArrayList<>();
+        private JMenuItem salva, salvaConNome, apri, esci, aggiungiPolinomio, modificaPolinomio, rimuoviPolinomio;
         private File fileSalvataggio = null;
+        private FrameAddPolinomio frameAddPolinomio = null;
 
-        private Finestra() throws ClassNotFoundException, UnsupportedLookAndFeelException, InstantiationException, IllegalAccessException {
+        private Finestra() {
             int WIDTH = 500, HEIGHT = 500;
             /* Imposto l'aspetto della finestra secondo quello del sistema operativo */
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            try {
+                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            } catch (Exception ignored){}
             setTitle("Polinomio"); /* Titolo finestra */
             setSize(WIDTH, HEIGHT); /* Dimensioni finestra */
             /*
             * Location al centro
             * */
             Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
-            int x = (int) ((dimension.getWidth() - WIDTH) / 2);
-            int y = (int) ((dimension.getHeight() - HEIGHT) / 2);
+            int x = (dimension.width - WIDTH) / 2;
+            int y = (dimension.height - HEIGHT) / 2;
             setLocation(x, y);
             /*
-            * Creazione ActionListener
+            * Creazione Listener
             * */
             ListenerFileMenu listenerFileMenu = new ListenerFileMenu();
+            ListenerCommandMenu listenerCommandMenu = new ListenerCommandMenu();
             /*
             * Inserimento componenti aggiuntivi:
             * Menù "File" e relative voci
@@ -192,15 +192,15 @@ class GUI{
             this.setJMenuBar( menuBar );
             JMenu fileMenu = new JMenu("File");
             menuBar.add(fileMenu);
+            apri = new JMenuItem("Apri");
+            apri.addActionListener(listenerFileMenu);
+            fileMenu.add(apri);
             salva = new JMenuItem("Salva");
             salva.addActionListener(listenerFileMenu);
             fileMenu.add(salva);
             salvaConNome = new JMenuItem("Salva con nome");
             salvaConNome.addActionListener(listenerFileMenu);
             fileMenu.add(salvaConNome);
-            carica = new JMenuItem("Carica");
-            carica.addActionListener(listenerFileMenu);
-            fileMenu.add(carica);
             esci = new JMenuItem("Esci");
             esci.addActionListener(listenerFileMenu);
             fileMenu.add(esci);
@@ -209,6 +209,15 @@ class GUI{
             * */
             JMenu commandMenu = new JMenu("Comandi");
             menuBar.add(commandMenu);
+            aggiungiPolinomio = new JMenuItem("Aggiungi polinomio");
+            aggiungiPolinomio.addActionListener(listenerCommandMenu);
+            commandMenu.add(aggiungiPolinomio);
+            modificaPolinomio = new JMenuItem("Modifica polinomio");
+            modificaPolinomio.addActionListener(listenerCommandMenu);
+            commandMenu.add(modificaPolinomio);
+            rimuoviPolinomio = new JMenuItem("Rimuovi polinomio");
+            rimuoviPolinomio.addActionListener(listenerCommandMenu);
+            commandMenu.add(rimuoviPolinomio);
             /*
             * Chiusura
             * */
@@ -233,7 +242,7 @@ class GUI{
                             if( ans == 0)
                                 save( fileSalvataggio.getAbsolutePath() );
                             else
-                                JOptionPane.showMessageDialog(null,"Nessun savetaggio!");
+                                JOptionPane.showMessageDialog(null,"Nessun salvataggio!");
                             return;
                         }
                         if( fileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION )
@@ -242,7 +251,7 @@ class GUI{
                             save( fileSalvataggio.getAbsolutePath() );
                         }
                         else
-                            JOptionPane.showMessageDialog(null,"Nessun savetaggio!");
+                            JOptionPane.showMessageDialog(null,"Nessun salvataggio!");
                     }catch( Exception exc ){
                         exc.printStackTrace();
                     }
@@ -255,12 +264,67 @@ class GUI{
                             save( fileSalvataggio.getAbsolutePath() );
                         }
                         else
-                            JOptionPane.showMessageDialog(null,"Nessun savetaggio!");
+                            JOptionPane.showMessageDialog(null,"Nessun salvataggio!");
                     }catch( Exception exc ){
                         exc.printStackTrace();
                     }
-                } else if(e.getSource() == carica){
+                } else if(e.getSource() == apri){
 
+                }
+            }
+        }
+        private class ListenerCommandMenu implements ActionListener {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(e.getSource() == aggiungiPolinomio){
+                    if(frameAddPolinomio == null) frameAddPolinomio = new FrameAddPolinomio();
+                    frameAddPolinomio.setVisible(true);
+                } else if(e.getSource() == modificaPolinomio) {
+
+                } else if(e.getSource() == rimuoviPolinomio){
+
+                }
+            }
+        }
+        private class FrameAddPolinomio extends JFrame implements ActionListener{
+            private JTextField polinomio;
+            private JButton button;
+
+            public FrameAddPolinomio(){
+                int WIDTH = 320, HEIGTH = 100;
+                setTitle("Aggiungi polinomio");
+                setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                setLocationRelativeTo(Finestra.this);
+
+                JPanel panel = new JPanel();
+                panel.setLayout(new GridLayout(2,1));
+                panel.setBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5));
+                JLabel label = new JLabel("Polinomio:", JLabel.LEFT);
+                label.setFont(new Font("Serif", Font.PLAIN, 12));
+                panel.add(label);
+                panel.add(polinomio = new JTextField("", 10));
+                button = new JButton("OK");
+                panel.add(button);
+                button.addActionListener(this);
+
+                add(panel, BorderLayout.NORTH);
+                pack();
+
+                setSize(WIDTH, HEIGTH);
+                Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
+                int x = (dimension.width - WIDTH) / 2;
+                int y = (dimension.height - HEIGHT) / 2;
+                setLocation(x, y);
+            }
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(e.getSource() == button){
+                    try{
+                        Applicazione.valutaEspressione(polinomio.getText());
+                    } catch(IllegalArgumentException iae){
+                        JOptionPane.showConfirmDialog(null, "Polinomio errato");
+                    }
+                    polinomi.add(Applicazione.riconosciPolinomio(polinomio.getText(), 1));
                 }
             }
         }
