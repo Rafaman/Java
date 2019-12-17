@@ -168,7 +168,7 @@ class GUI{
         private JMenuItem salva, salvaConNome, apri, esci, aggiungiPolinomio, modificaPolinomio, rimuoviPolinomio, polinomioLL, polinomioSet, polinomioList, polinomioMap;
         private File fileSalvataggio = null;
         private int tipoPolinomio;
-        private JPanel panel, panelPolinomi, panelOperazioni;
+        private JPanel panelPolinomi;
         private JCheckBox addizione, moltiplicazione, derivata;
 
         private Finestra() {
@@ -247,12 +247,12 @@ class GUI{
             /*
             * Pannelli e componenti aggiuntivi
             * */
-            panel = new JPanel();
+            JPanel panel = new JPanel();
             panel.setLayout(new GridLayout(1, 2));
             panel.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
             panelPolinomi = new JPanel();
             panelPolinomi.setLayout(new GridLayout(4, 1));
-            panelOperazioni = new JPanel();
+            JPanel panelOperazioni = new JPanel();
             panelOperazioni.setLayout(new GridLayout(4, 1));
             panelOperazioni.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
             JLabel label = new JLabel("Polinomi", JLabel.LEFT);
@@ -290,7 +290,8 @@ class GUI{
             public void actionPerformed(ActionEvent e) {
                 if(e.getSource() == esci){
                     if(consensoUscita()) System.exit(0);
-                } else if(e.getSource() == salva){
+                }
+                else if(e.getSource() == salva){
                     JFileChooser fileChooser = new JFileChooser();
                     try{
                         if( fileSalvataggio != null ){
@@ -311,12 +312,13 @@ class GUI{
                     }catch( Exception exc ){
                         exc.printStackTrace();
                     }
-                } else if(e.getSource() == salvaConNome){
+                }
+                else if(e.getSource() == salvaConNome){
                     JFileChooser chooser=new JFileChooser();
                     try{
                         if( chooser.showSaveDialog(null)==JFileChooser.APPROVE_OPTION )
-                            fileSalvataggio=chooser.getSelectedFile();
-                        if( fileSalvataggio!=null ){
+                            fileSalvataggio = chooser.getSelectedFile();
+                        if( fileSalvataggio != null ){
                             save( fileSalvataggio.getAbsolutePath() );
                         }
                         else
@@ -324,8 +326,9 @@ class GUI{
                     }catch( Exception exc ){
                         exc.printStackTrace();
                     }
-                } else if(e.getSource() == apri){
-
+                }
+                else if(e.getSource() == apri){
+                    System.exit(0); /* TODO */
                 }
             }
         }
@@ -393,8 +396,15 @@ class GUI{
         private class ListenerOperation implements ActionListener{
             @Override
             public void actionPerformed(ActionEvent e) {
+                Polinomio risultato;
                 if(e.getSource() == addizione){
+                    if(countSelected(checkPolinomi) < 2) {
+                        JOptionPane.showMessageDialog(null, "Hai selezionato meno di 2 polinomi", "Error", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                    for(JCheckBox cb:checkPolinomi){
 
+                    }
                 } else if(e.getSource() == moltiplicazione){
 
                 } else {
