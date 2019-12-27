@@ -147,7 +147,7 @@ public class Applicazione {
         if(s.equals("")) throw new IllegalArgumentException();
         else if(s.contains("++") || s.contains("--")) throw new IllegalArgumentException();
         String polinomioControllo = "[\\-?[[0-9]+]s[[x]^[0-9]]*]*";
-        if(!Pattern.matches(polinomioControllo, s)) throw new IllegalArgumentException();
+        if(!polinomioControllo.matches(s)) throw new IllegalArgumentException();
     }
 }
 
