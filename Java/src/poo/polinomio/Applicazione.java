@@ -8,6 +8,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Scanner;
 import java.util.StringTokenizer;
 import java.util.regex.*;
@@ -109,7 +110,7 @@ public class Applicazione {
         /*
         * Inizio del riconoscimento dei monomi
         * */
-        StringTokenizer st = new StringTokenizer(s, "=+-x^", true);
+        StringTokenizer st = new StringTokenizer(s, "+-x^", true);
         while(st.hasMoreTokens()){
             String corrente = st.nextToken();
             if (corrente.equals("-")) segno = true;
@@ -144,12 +145,15 @@ public class Applicazione {
         if(s.equals("")) throw new IllegalArgumentException();
         else if(s.contains("++") || s.contains("--")) throw new IllegalArgumentException();
         String polinomioControllo = "[\\-?[[0-9]+]s[[x]^[0-9]]*]*";
-        if(!polinomioControllo.matches(s)) throw new IllegalArgumentException();
+        if(!Pattern.matches(polinomioControllo, s)) throw new IllegalArgumentException();
     }
 }
 
 class GUI{
     public static void creaGUI(){
+        /*
+        * Creazione GUI
+        * */
         EventQueue.invokeLater(() -> {
             JFrame frame = new Finestra();
             frame.setVisible(true);
@@ -157,16 +161,16 @@ class GUI{
     }
     static class Finestra extends JFrame{
         private ArrayList<Polinomio> polinomi = new ArrayList<>(), derivate = new ArrayList<>();
-        private ArrayList<JCheckBox> checkPolinomi = new ArrayList<>();
-        private JPanel panelPolinomi;
+        private ArrayList<JCheckBox> checkPolinomi = new ArrayList<>(), ris = new ArrayList<>();
+        private JPanel panelPolinomi, panelRisultati;
         private JCheckBox addizione, moltiplicazione, derivata;
-        private JMenuItem salva, salvaConNome, apri, esci, aggiungiPolinomio, modificaPolinomio, rimuoviPolinomio, polinomioLL, polinomioSet, polinomioList, polinomioMap;
+        private JMenuItem salva, salvaConNome, apri, esci, aggiungiPolinomio, modificaPolinomio, rimuoviPolinomio, polinomioLL, polinomioSet, polinomioList, polinomioMap, help, about;
         private JButton start;
         private File fileSalvataggio = null;
         private int tipoPolinomio;
 
         private Finestra() {
-            int WIDTH = 500, HEIGHT = 300;
+            int WIDTH = 500, HEIGHT = 350;
             /* Imposto l'aspetto della finestra secondo quello del sistema operativo */
             try {
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -186,6 +190,7 @@ class GUI{
             ListenerFileMenu listenerFileMenu = new ListenerFileMenu();
             ListenerCommandMenu listenerCommandMenu = new ListenerCommandMenu();
             ListenerTipologieMenu listenerTipologieMenu = new ListenerTipologieMenu();
+            ListenerHelpMenu listenerHelpMenu = new ListenerHelpMenu();
             ListenerStartButton listenerStartButton = new ListenerStartButton();
             /*
             * Inserimento componenti aggiuntivi:
@@ -237,6 +242,17 @@ class GUI{
             rimuoviPolinomio.addActionListener(listenerCommandMenu);
             commandMenu.add(rimuoviPolinomio);
             /*
+            * Menù "Help"
+            * */
+            JMenu helpMenu = new JMenu("Help");
+            menuBar.add(helpMenu);
+            help = new JMenuItem("Help");
+            help.addActionListener(listenerHelpMenu);
+            about = new JMenuItem("About");
+            about.addActionListener(listenerHelpMenu);
+            helpMenu.add(help);
+            helpMenu.add(about);
+            /*
             * Pannelli e componenti aggiuntivi:
             * Pannello generale
             * */
@@ -255,18 +271,25 @@ class GUI{
             panelOperazioni.setLayout(new GridLayout(4, 1));
             panelOperazioni.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
             /*
+            * Pannello risultati
+            * */
+            panelRisultati = new JPanel();
+            panelRisultati.setLayout(new FlowLayout(FlowLayout.LEFT));
+            /*
             * Creazione etichette
             * */
             JLabel label = new JLabel("Polinomi", JLabel.LEFT);
             label.setFont(new Font("", Font.PLAIN, 14));
             JLabel label2 = new JLabel("Operazioni");
             label2.setFont(new Font("", Font.PLAIN, 14));
+            JLabel label3 = new JLabel("Risultati");
+            label3.setFont(new Font("", Font.PLAIN, 14));
             /*
             * Aggiunta etichette ai rispettivi pannelli
             * */
             panelPolinomi.add(label);
-            panelPolinomi.setLayout(new FlowLayout(FlowLayout.LEFT));
             panelOperazioni.add(label2);
+            panelRisultati.add(label3);
             /*
             * Creazione voci operazioni permesse e aggiunta al loro pannello
             * */
@@ -281,7 +304,7 @@ class GUI{
             * */
             JPanel panelStart = new JPanel();
             panelStart.setLayout(new FlowLayout(FlowLayout.RIGHT));
-            panelStart.setBorder(BorderFactory.createEmptyBorder(72, 0, 5, 5));
+            panelStart.setBorder(BorderFactory.createEmptyBorder(105, 0, 5, 5));
             panelStart.setSize(WIDTH, 20);
             start = new JButton("Start");
             start.addActionListener(listenerStartButton);
@@ -291,7 +314,7 @@ class GUI{
             * */
             panel.add(panelPolinomi);
             panel.add(panelOperazioni);
-            panel.add(new JPanel());
+            panel.add(panelRisultati);
             panel.add(panelStart, BorderLayout.WEST);
             add(panel, BorderLayout.NORTH);
             /*
@@ -310,11 +333,20 @@ class GUI{
             });
         }
         private class ListenerFileMenu implements ActionListener{
+            /*
+            * Listener per menù "File" della GUI, nel quale sono presenti "Apri, Salva, Salva con nome, esci"
+            * */
             @Override
             public void actionPerformed(ActionEvent e) {
+                /*
+                * Utente seleziona esci
+                * */
                 if(e.getSource() == esci){
                     if(consensoUscita()) System.exit(0);
                 }
+                /*
+                 * Utente seleziona salva
+                 * */
                 else if(e.getSource() == salva){
                     JFileChooser fileChooser = new JFileChooser();
                     try{
@@ -338,6 +370,9 @@ class GUI{
                         exc.printStackTrace();
                     }
                 }
+                /*
+                 * Utente seleziona salva con nome
+                 * */
                 else if(e.getSource() == salvaConNome){
                     JFileChooser chooser=new JFileChooser();
                     try{
@@ -353,6 +388,9 @@ class GUI{
                         exc.printStackTrace();
                     }
                 }
+                /*
+                 * Utente seleziona apri
+                 * */
                 else if(e.getSource() == apri){
                     JFileChooser chooser = new JFileChooser();
                     try {
@@ -377,8 +415,14 @@ class GUI{
             }
         }
         private class ListenerCommandMenu implements ActionListener {
+            /*
+             * Listener menù "Comandi" della GUI, nel quale troviamo il menù "Tipologie" e i comandi "Aggiungi polinomio, Modifica polinomio, Rimuovi polinomio"
+             * */
             @Override
             public void actionPerformed(ActionEvent e) {
+                /*
+                 * Utente seleziona aggiungi polinomio
+                 * */
                 if(e.getSource() == aggiungiPolinomio){
                     String polinomio = JOptionPane.showInputDialog(null, "Inserisci polinomio:", "Aggiungi polinomio", JOptionPane.PLAIN_MESSAGE);
                     try {
@@ -390,7 +434,11 @@ class GUI{
                         JOptionPane.showMessageDialog(null, "Polinomio errato!", "Errore", JOptionPane.ERROR_MESSAGE);
                     }
                     Finestra.this.validate();
-                } else if(e.getSource() == modificaPolinomio) {
+                }
+                /*
+                 * Utente seleziona modifica polinomio
+                 * */
+                else if(e.getSource() == modificaPolinomio) {
                     String newPolinomio = null;
                     if(countSelected(checkPolinomi) > 1) {
                         JOptionPane.showMessageDialog(null, "Troppi polinomi selezionati!", "Errore", JOptionPane.ERROR_MESSAGE);
@@ -405,20 +453,27 @@ class GUI{
                                 int index = polinomi.indexOf(polinomi.get(checkPolinomi.indexOf(cb)));
                                 polinomi.add(index, polinomioCorrente);
                             } catch (IllegalArgumentException iae){
-                                JOptionPane.showMessageDialog(null, "Polinomio errato!", "Errore", JOptionPane.ERROR_MESSAGE);
+                                JOptionPane.showMessageDialog(null, "Polinomio errato!", "Error", JOptionPane.ERROR_MESSAGE);
                             }
                             cb.setText(newPolinomio);
                             cb.setSelected(false);
                         }
-                } else if(e.getSource() == rimuoviPolinomio){
-                    for(int i = 0; i < checkPolinomi.size(); i++) {
-                        if (checkPolinomi.get(i).isSelected()) {
-                            panelPolinomi.remove(checkPolinomi.get(i));
-                            checkPolinomi.remove(i);
-                            polinomi.remove(i);
-                        } else{
-                            JOptionPane.showMessageDialog(null, "Nessun polinomio selezionato!", "Error", JOptionPane.ERROR_MESSAGE);
-                            return;
+                }
+                /*
+                 * Utente seleziona rimuovi polinomio
+                 * */
+                else if(e.getSource() == rimuoviPolinomio){
+                    if(countSelected(checkPolinomi) == 0) {
+                        JOptionPane.showMessageDialog(null, "Nessun polinomio selezionato!", "Error", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                    Iterator<JCheckBox> iterator = checkPolinomi.iterator();
+                    while (iterator.hasNext()) {
+                        JCheckBox corrente = iterator.next();
+                        if (corrente.isSelected()) {
+                            polinomi.remove(checkPolinomi.indexOf(corrente));
+                            panelPolinomi.remove(corrente);
+                            iterator.remove();
                         }
                     }
                     Finestra.this.repaint();
@@ -428,6 +483,9 @@ class GUI{
             }
         }
         private class ListenerTipologieMenu implements ActionListener{
+            /*
+             * Listener per il sottomenù "Tipologie" presente in "Comandi" per la scelta del tipo di polinomio
+             * */
             @Override
             public void actionPerformed(ActionEvent e) {
                 if(e.getSource() == polinomioLL) {
@@ -449,28 +507,104 @@ class GUI{
                 postScelta();
             }
         }
-        private class ListenerStartButton implements ActionListener{
+        private class ListenerHelpMenu implements ActionListener{
+            /*
+            * Listener menù "Help"
+            * */
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(polinomi.size() == 0) {
-                    JOptionPane.showMessageDialog(null, "Nessun polinomio inserito", "Error", JOptionPane.ERROR_MESSAGE);
-                    return;
+                if(e.getSource() == help)
+                    JOptionPane.showMessageDialog(null, "Per iniziare:\n1. Recarsi nel menu' \"Comandi\" e scegliere la tipologia di polinomio da utilizzare\n" +
+                            "2. Inserire nel programma i polinomi tramite l'apposita voce nel menu' \"Comandi\" o tramite l'apertura di un qualsiasi file\n" +
+                            "3. Spuntare le caselle dei polinomi su cui effettuare le operazioni, scelte anch'esse nel medesimo modo\n" +
+                            "4. Cliccare sul bottone \"Start\"\n\n\nNota: i polinomi inseriti NON devono contenere caratteri diversi da cifre, \"x\" e \"-, +, ^\"", "Help", JOptionPane.INFORMATION_MESSAGE);
+                else if(e.getSource() == about){
+                    JOptionPane.showMessageDialog(null, "Applicazione per lavorare con i polinomi", "About", JOptionPane.INFORMATION_MESSAGE);
                 }
-                if(countSelected(checkPolinomi) == 0){
-                    JOptionPane.showMessageDialog(null, "Nessun polinomio selezionato", "Error", JOptionPane.ERROR_MESSAGE);
-                }
-                if(addizione.isSelected()) actionOperation(addizione);
-                if(moltiplicazione.isSelected()) actionOperation(moltiplicazione);
-                if(derivata.isSelected()) actionOperation(derivata);
             }
         }
-        private boolean consensoUscita(){
+        private class ListenerStartButton implements ActionListener{
+            /*
+             * Listener bottone "Start" per lìavvio delle operazioni scelte
+             * */
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(!addizione.isSelected() && !moltiplicazione.isSelected() && !derivata.isSelected())
+                    JOptionPane.showMessageDialog(null, "Nessuna operazione selezionata", "Error", JOptionPane.ERROR_MESSAGE);
+                else {
+                    String ris = "";
+                    if(polinomi.size() == 0) {
+                        JOptionPane.showMessageDialog(null, "Nessun polinomio inserito", "Error", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                    if(countSelected(checkPolinomi) == 0){
+                        JOptionPane.showMessageDialog(null, "Nessun polinomio selezionato", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                    if(addizione.isSelected()) ris += actionOperation(addizione);
+                    if(moltiplicazione.isSelected()) ris += actionOperation(moltiplicazione);
+                    if(derivata.isSelected()) ris += actionOperation(derivata);
+                    JOptionPane.showMessageDialog(null, ris, "Risultati", JOptionPane.PLAIN_MESSAGE);
+                }
+            }
+        }
+        private String actionOperation(JCheckBox cb) {
+            String risultati = "";
+            Polinomio risultato = new PolinomioLL();
+            if(countSelected(checkPolinomi) < 2 && !derivata.isSelected()) {
+                JOptionPane.showMessageDialog(null, "Hai selezionato meno di 2 polinomi", "Error", JOptionPane.ERROR_MESSAGE);
+                if(addizione.isSelected()) addizione.setSelected(false);
+                else if(moltiplicazione.isSelected()) moltiplicazione.setSelected(false);
+                else derivata.setSelected(false);
+                return null;
+            } else {
+                if(cb == addizione){
+                    for(int i = 0; i < checkPolinomi.size(); i++)
+                        if(checkPolinomi.get(i).isSelected())
+                            risultato = risultato.add(polinomi.get(i));
+                    ris.add(new JCheckBox(risultato.toString()));
+                    panelRisultati.add(ris.get(ris.size() - 1));
+                    risultati += "Addizione: " + risultato.toString() + "\n";
+                    addizione.setSelected(false);
+                } else if(cb == moltiplicazione){
+                    risultato.add(new Monomio(1, 0));
+                    for(int i = 0; i < checkPolinomi.size(); i++)
+                        if(checkPolinomi.get(i).isSelected())
+                            risultato = risultato.mul(polinomi.get(i));
+                    ris.add(new JCheckBox(risultato.toString()));
+                    panelRisultati.add(ris.get(ris.size() - 1));
+                    risultati += "Moltiplicazione: " + risultato.toString() + "\n";
+                    moltiplicazione.setSelected(false);
+                }
+            }
+            if (cb == derivata){
+                risultati += "Derivata:\n";
+                for (int i = 0; i < checkPolinomi.size(); i++) {
+                    if (checkPolinomi.get(i).isSelected()){
+                        risultato = polinomi.get(i);
+                        derivate.add(risultato.derivata());
+                        risultati += derivate.get(derivate.size() - 1) + "\n";
+                    }
+                    ris.add(new JCheckBox(derivate.get(derivate.size() - 1).toString()));
+                    panelRisultati.add(ris.get(ris.size() - 1));
+                }
+                derivata.setSelected(false);
+            }
+            Finestra.this.validate();
+            return risultati;
+        }
+        private static boolean consensoUscita(){
+            /*
+             * Popup per richiesta del consenso di uscita dal programma
+             * */
             int option = JOptionPane.showConfirmDialog(
                     null, "Uscendo si perderanno tutti i dati!\n\nContinuare?", "Esci",
                     JOptionPane.YES_NO_OPTION);
             return option == JOptionPane.YES_OPTION;
         }
         private void save(String s) throws IOException {
+            /*
+             * Salvataggio su file
+             * */
             PrintWriter pw = new PrintWriter(new FileWriter(s));
             for(JCheckBox cb: checkPolinomi)
                 if(cb.isSelected())
@@ -478,10 +612,14 @@ class GUI{
             pw.close();
         }
         private void load(String s) throws IOException{
+            /*
+             * Lettura polinomi da file
+             * */
+            String polinomiErrati = "", polinomioCorrente = "";
             BufferedReader br = new BufferedReader(new FileReader(s));
-            while(true){
+            while(br.ready()){
                 try{
-                    String polinomioCorrente = br.readLine();
+                    polinomioCorrente = br.readLine();
                     Applicazione.valutaEspressione(polinomioCorrente);
                     polinomi.add(Applicazione.riconosciPolinomio(polinomioCorrente, tipoPolinomio));
                     checkPolinomi.add(new JCheckBox(polinomioCorrente));
@@ -490,12 +628,17 @@ class GUI{
                     Finestra.this.repaint();
                     Finestra.this.validate();
                 }catch(Exception e){
-                    break;
+                    polinomiErrati = polinomiErrati + polinomioCorrente + "\n";
                 }
             }
+            if(!polinomiErrati.equals(""))
+                JOptionPane.showMessageDialog(null, "I seguenti polinomi sono errati:\n" + polinomiErrati, "Error", JOptionPane.ERROR_MESSAGE);
             br.close();
         }
         private void start(){
+            /*
+            * Il metodo disabilita alcune funzioni dell'applicazione fin quando l'utente non sceglie il tipo di polinomio con cui vuole procedere
+            * */
             salva.setEnabled(false);
             salvaConNome.setEnabled(false);
             apri.setEnabled(false);
@@ -508,6 +651,9 @@ class GUI{
             start.setEnabled(false);
         }
         private void postScelta(){
+            /*
+            * Il metodo riabilita le funzioni bloccate dal metodo start()
+            * */
             if(tipoPolinomio != 0) {
                 salva.setEnabled(true);
                 salvaConNome.setEnabled(true);
@@ -522,45 +668,13 @@ class GUI{
             }
         }
         private static int countSelected(ArrayList<JCheckBox> al){
+            /*
+            * E' un metodo di supporto per effettuare controlli sulle scelte dell'utente
+            * */
             int count = 0;
             for(JCheckBox cb:al)
                 if(cb.isSelected()) count++;
             return count;
-        }
-        private void actionOperation(JCheckBox cb) {
-            Polinomio risultato = new PolinomioLL();
-            if(countSelected(checkPolinomi) < 2 && !derivata.isSelected()) {
-                JOptionPane.showMessageDialog(null, "Hai selezionato meno di 2 polinomi", "Error", JOptionPane.ERROR_MESSAGE);
-                if(addizione.isSelected()) addizione.setSelected(false);
-                else if(moltiplicazione.isSelected()) moltiplicazione.setSelected(false);
-                else derivata.setSelected(false);
-                return;
-            } else {
-                if(cb == addizione){
-                    for(int i = 0; i < checkPolinomi.size(); i++)
-                        if(checkPolinomi.get(i).isSelected())
-                            risultato = risultato.add(polinomi.get(i));
-                    JOptionPane.showMessageDialog(null, "Addizione: " + risultato.toString(), "Addizione", JOptionPane.PLAIN_MESSAGE);
-                    addizione.setSelected(false);
-                } else if(cb == moltiplicazione){
-                    risultato.add(new Monomio(1, 0));
-                    for(int i = 0; i < checkPolinomi.size(); i++)
-                        if(checkPolinomi.get(i).isSelected())
-                            risultato = risultato.mul(polinomi.get(i));
-                    JOptionPane.showMessageDialog(null, "Moltiplicazione: " + risultato.toString(), "Moltiplicazione", JOptionPane.PLAIN_MESSAGE);
-                    moltiplicazione.setSelected(false);
-                }
-            }
-            if (cb == derivata){
-                for (int i = 0; i < checkPolinomi.size(); i++) {
-                    if (checkPolinomi.get(i).isSelected()){
-                        risultato = polinomi.get(i);
-                        derivate.add(risultato.derivata());
-                    }
-                }
-                derivata.setSelected(false);
-                JOptionPane.showMessageDialog(null, "Derivata: " + derivate.toString().substring(1, derivate.toString().length() - 1), "Derivata", JOptionPane.PLAIN_MESSAGE);
-            }
         }
     }
 }
