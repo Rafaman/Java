@@ -601,15 +601,19 @@ class GUI{
                     JOptionPane.YES_NO_OPTION);
             return option == JOptionPane.YES_OPTION;
         }
-        private void save(String s) throws IOException {
+        private void save(String s){
             /*
              * Salvataggio su file
              * */
-            PrintWriter pw = new PrintWriter(new FileWriter(s));
-            for(JCheckBox cb: checkPolinomi)
-                if(cb.isSelected())
-                    pw.println(cb.getText());
-            pw.close();
+            try {
+                PrintWriter pw = new PrintWriter(new FileWriter(s));
+                for (JCheckBox cb : checkPolinomi)
+                    if (cb.isSelected())
+                        pw.println(cb.getText());
+                pw.close();
+            }catch (IOException ioe){
+                JOptionPane.showMessageDialog(null, "Errore lettura file", "Error", JOptionPane.ERROR_MESSAGE);
+            }
         }
         private void load(String s) throws IOException{
             /*
@@ -627,8 +631,10 @@ class GUI{
                         panelPolinomi.add(cb);
                     Finestra.this.repaint();
                     Finestra.this.validate();
-                }catch(Exception e){
+                }catch(IllegalArgumentException iae){
                     polinomiErrati = polinomiErrati + polinomioCorrente + "\n";
+                }catch(Exception e){
+                    JOptionPane.showMessageDialog(null, "Errore lettura file", "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
             if(!polinomiErrati.equals(""))
