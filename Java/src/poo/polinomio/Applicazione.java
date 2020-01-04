@@ -242,7 +242,7 @@ class GUI{
             rimuoviPolinomio.addActionListener(listenerCommandMenu);
             commandMenu.add(rimuoviPolinomio);
             /*
-            * Menù "Help"
+            * Menù "Help" e relative voci
             * */
             JMenu helpMenu = new JMenu("Help");
             menuBar.add(helpMenu);

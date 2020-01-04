@@ -8,50 +8,66 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.InputMismatchException;
 
 public class Sudoku {
     private final int SIZE = 9;
     private int[][] board = new int[SIZE][SIZE], boardBloccata = new int[SIZE][SIZE];
-    private ArrayList<int[][]> soluzioni = new ArrayList<>();
 
     public Sudoku() {
+        /*
+         * Costruttore di default: inizializza la board a zero
+         * */
         for(int i = 0; i < SIZE; i++)
             for(int j = 0; j < SIZE; j++)
                 board[i][j] = 0;
     }
     public Sudoku(int[][] imp) {
+        /*
+         * Costruttore di impostazione: inizializza la matrice board copiando i valori dalla matrice parametro
+         * */
         for(int i = 0; i < SIZE; i++)
             for(int j = 0; j < SIZE; j++)
                 imposta(i, j, imp[i][j]);
         boardBloccata = imp.clone();
     }
     public void imposta(int row, int col, int v){
+        /*
+         * Metodo che imposta il contenuto di una cella <i,j> uguale a v, controllando la correttezza dei parametri
+         * */
         if(row < 0 || row > 8) throw new IllegalArgumentException("Numero riga errato");
         if(col < 0 || col > 8) throw new IllegalArgumentException("Numero colonna errato");
         if(v < 0 || v > 9) throw new IllegalArgumentException("Valore errato");
         assegna(row, col, v);
     }
     public void risolvi(){
+        /*
+         * Metodo per la risoluzione
+         * */
         colloca(0, 0);
     }
     private void colloca(int row, int col){
+        /*
+         * Backtracking
+         * */
         if(boardBloccata[row][col] != 0){
             if(row == SIZE - 1 && col == SIZE - 1) scriviSoluzione();
             else if(col < SIZE - 1) colloca(row, col + 1);
-            else if(row < SIZE - 1) colloca(row + 1, col);}
+            else if(row < SIZE - 1) colloca(row + 1, 0);}
         else
             for(int n = 1; n < 10; n++)
                 if(assegnabile(row, col, n)) {
                     assegna(row, col, n);
                     if(row == SIZE - 1 && col == SIZE - 1) scriviSoluzione();
                     else if(col < SIZE - 1) colloca(row, col + 1);
-                    else if(row < SIZE - 1) colloca(row + 1, col);
+                    else if(row < SIZE - 1) colloca(row + 1, 0);
                     deassegna(row, col);
                 }
     }
     private boolean assegnabile(int row, int col, int v){
+        /*
+         * Controlla se il valore v è assegnabile ad una cella <i,j>
+         * */
         if(board[row][col] != 0) return false;
         for(int j = 0; j < SIZE; j++)
             if(board[row][j] == v) return false;
@@ -63,16 +79,25 @@ public class Sudoku {
         board[row][col] = v;
     }
     private void deassegna(int row, int col){
+        /*
+         * Metodo che svuota la cella <i,j>
+         * */
         board[row][col] = 0;
     }
     private void scriviSoluzione(){
+        /*
+         * Metodo che aggiunge ad un ArrayList la soluzione trovata
+         * */
         int[][] soluzione = new int[SIZE][SIZE];
         for(int i = 0; i < SIZE; i++)
             for(int j = 0; j < SIZE; j++)
                 soluzione[i][j] = board[i][j];
-        soluzioni.add(soluzione);
+        GUI.Finestra.soluzioni.add(soluzione);
     }
     private boolean checkSottoMatrici(int row, int col, int v){
+        /*
+         * Metodo per il controllo della presenza di v nelle sottomatrici 3x3 del sudoku
+         * */
         int boxRow = row - row % 3, boxCol = col - col % 3;
 
         for (int i = 0; i < 3; i++)
@@ -101,19 +126,9 @@ class GUI{
         private final int SIZE = 9;
         private int numeriInseriti, indiceSoluzione;
         private JTextField[][] iniziale = new JTextField[SIZE][SIZE];
-        //private int[][] impostata = new int[SIZE][SIZE];
-        private  int[][] impostata = {{3, 0, 6, 5, 0, 8, 4, 0, 0},
-                                        {5, 2, 0, 0, 0, 0, 0, 0, 0},
-                                        {0, 8, 7, 0, 0, 0, 0, 3, 1},
-                                        {0, 0, 3, 0, 1, 0, 0, 8, 0},
-                                        {9, 0, 0, 8, 6, 3, 0, 0, 5},
-                                        {0, 5, 0, 0, 9, 0, 6, 0, 0},
-                                        {1, 3, 0, 0, 0, 0, 2, 5, 0},
-                                        {0, 0, 0, 0, 0, 0, 0, 7, 4},
-                                        {0, 0, 5, 2, 0, 6, 3, 0, 0}};
-        private ArrayList<int[][]> soluzioni = new ArrayList<>();
+        private int[][] impostata = new int[SIZE][SIZE];
+        protected static ArrayList<int[][]> soluzioni = new ArrayList<>();
         private JMenuItem salva, salvaConNome, apri, esci, help, about;
-        private JLabel label, label1, label2;
         private JButton previous, next, risolvi, pulisci;
         private JPanel panelDati;
         private File fileSalvataggio = null;
@@ -160,7 +175,7 @@ class GUI{
             esci.addActionListener(listenerFileMenu);
             fileMenu.add(esci);
             /*
-             * Menù "Help"
+             * Menù "Help" e relative voci
              * */
             JMenu helpMenu = new JMenu("Help");
             menuBar.add(helpMenu);
@@ -176,7 +191,7 @@ class GUI{
              * */
             JPanel panel = new JPanel();
             panel.setLayout(new GridLayout(1, 2));
-            panel.setBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5));
+            panel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
             /*
              * Pannello sudoku
              * */
@@ -184,7 +199,7 @@ class GUI{
             panelSudoku.setLayout(new GridLayout(9, 9));
             for(int i = 0; i < SIZE; i++)
                 for(int j = 0; j < SIZE; j++) {
-                    JTextField cella = new JTextField("");
+                    JTextField cella = new JTextField();
                     cella.setHorizontalAlignment(JTextField.CENTER);
                     iniziale[i][j] = cella;
                     panelSudoku.add(iniziale[i][j]);
@@ -327,7 +342,8 @@ class GUI{
                 if(e.getSource() == help)
                     JOptionPane.showMessageDialog(null, "Per iniziare:\n1. Inserire le celle bloccate\n" +
                             "2. Cliccare sul pulsante \"Risolvi\"\n" +
-                            "3. Navigare tra le soluzioni (se maggiori di una) con gli appositi pulsanti\n", "Help", JOptionPane.INFORMATION_MESSAGE);
+                            "3. Navigare tra le soluzioni (se maggiori di una) con gli appositi pulsanti\n" +
+                            "4. Cliccare sul pulsante \"Pulisci\" pre inserire un nuovo pattern\n", "Help", JOptionPane.INFORMATION_MESSAGE);
                 else if(e.getSource() == about){
                     JOptionPane.showMessageDialog(null, "Sudoku solver", "About", JOptionPane.INFORMATION_MESSAGE);
                 }
@@ -336,57 +352,66 @@ class GUI{
         private class ListenerButton implements ActionListener{
             @Override
             public void actionPerformed(ActionEvent e) {
+                /*
+                * Utente clicca risolvi
+                * */
                 if(e.getSource() == risolvi){
-                    /*for(int i = 0; i < SIZE; i++)
-                        for(int j = 0; j < SIZE; j++) {
+                    for(int i = 0; i < SIZE; i++)
+                        for(int j = 0; j < SIZE; j++)
                             if(iniziale[i][j].getText().equals(""))
                                 impostata[i][j] = 0;
-                            else if(iniziale[i][j].getText().matches("[1-9]]")) {
+                            else if(iniziale[i][j].getText().matches("[1-9]")) {
                                 impostata[i][j] = Integer.parseInt(iniziale[i][j].getText());
                                 numeriInseriti++;
                             }
-                        }*/
                     Sudoku s = new Sudoku(impostata);
                     s.risolvi();
-                    label = new JLabel("Numeri inseriti: " + numeriInseriti);
+                    JLabel label = new JLabel("Numeri inseriti: " + numeriInseriti);
                     label.setFont(new Font("", Font.PLAIN, 14));
-                    label1 = new JLabel("Numero soluzioni: " + soluzioni.size());
+                    JLabel label1 = new JLabel("Numero soluzioni: " + soluzioni.size());
                     label1.setFont(new Font("", Font.PLAIN, 14));
-                    label2 = new JLabel("Difficolta': " + calcoloDifficolta());
+                    JLabel label2 = new JLabel("Difficolta': " + calcoloDifficolta());
                     label2.setFont(new Font("", Font.PLAIN, 14));
                     panelDati.add(label);
                     panelDati.add(label1);
                     panelDati.add(label2);
                     panelDati.setBorder(BorderFactory.createEmptyBorder(0, 60, 40, 0));
                     risolvi.setEnabled(false);
+                    displaySolution(soluzioni.get(0));
                     Finestra.this.validate();
-                } else if(e.getSource() == previous){
+                }
+                /*
+                 * Utente clicca previous
+                 * */
+                else if(e.getSource() == previous){
                     try{
                         if(indiceSoluzione == 0) throw new Exception();
                         indiceSoluzione--;
-                        int[][] temp = soluzioni.get(indiceSoluzione);
-                        for(int i = 0; i < SIZE; i++)
-                            for(int j = 0; j < SIZE; j++)
-                                iniziale[i][j].setText("" + temp[i][j]);
+                        displaySolution(soluzioni.get(indiceSoluzione));
                         Finestra.this.repaint();
                         Finestra.this.validate();
                     }catch(Exception ex){
                         JOptionPane.showMessageDialog(null, "Nessuna soluzione precedente", "Error", JOptionPane.ERROR_MESSAGE);
                     }
-                } else if(e.getSource() == next){
+                }
+                /*
+                 * Utente clicca next
+                 * */
+                else if(e.getSource() == next){
                     try{
                         if(indiceSoluzione == soluzioni.size() - 1) throw new Exception();
                         indiceSoluzione++;
-                        int[][] temp = soluzioni.get(indiceSoluzione);
-                        for(int i = 0; i < SIZE; i++)
-                            for(int j = 0; j < SIZE; j++)
-                                iniziale[i][j].setText("" + temp[i][j]);
+                        displaySolution(soluzioni.get(indiceSoluzione));
                         Finestra.this.repaint();
                         Finestra.this.validate();
                     }catch(Exception ex){
                         JOptionPane.showMessageDialog(null, "Nessuna soluzione successiva", "Error", JOptionPane.ERROR_MESSAGE);
                     }
-                } else if(e.getSource() == pulisci){
+                }
+                /*
+                 * Utente clicca pulisci
+                 * */
+                else if(e.getSource() == pulisci){
                     for(JTextField[] riga: iniziale)
                         for(JTextField cella: riga)
                             cella.setText("");
@@ -416,9 +441,10 @@ class GUI{
                 PrintWriter pw = new PrintWriter(new FileWriter(s));
                 for (int[] riga : impostata) {
                     for (int e : riga)
-                        pw.print(e);
+                        pw.print(e + " ");
                     pw.println();
                 }
+                pw.println();
                 pw.close();
             } catch (IOException ioe){
                 JOptionPane.showMessageDialog(null, "Errore lettura file", "Error", JOptionPane.ERROR_MESSAGE);
@@ -428,24 +454,44 @@ class GUI{
             /*
              * Lettura sudoku da file
              * */
-            int row = 0, col = 0, numero;
+            int row = 0;
+            String riga;
             BufferedReader br = new BufferedReader(new FileReader(s));
             while(br.ready())
                 try{
-                    numero = br.read();
-                    if(numero < 1 || numero > 9) throw new InputMismatchException();
-                    iniziale[row][col].setText("" + numero);
-                    row++; col++;
+                    int col = 0;
+                    riga = br.readLine();
+                    for(char c: riga.replaceAll(" ", "").toCharArray()){
+                        int numero = Integer.parseInt("" + c);
+                        if(numero < 0 || numero > 9) throw new InputMismatchException();
+                        if(numero != 0)
+                            iniziale[row][col].setText("" + numero);
+                        col++;
+                    }
+                    row++;
                 } catch (InputMismatchException ime){
-                    JOptionPane.showMessageDialog(null, "Errore contenuto file, un numero non e' compreso tra 1 e 9", "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Errore contenuto file, un numero non e' compreso tra 0 e 9 ", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
                 } catch (Exception e){
-                    JOptionPane.showMessageDialog(null, "Errore lettura file", "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Errore lettura file" + e, "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
                 }
         }
         private String calcoloDifficolta(){
+            /*
+             * Metodo molto semplice per il calcolo della difficoltà, basato solamente sui numeri inseriti nella matrice bloccata
+             * */
             if(numeriInseriti > 55) return "FACILE";
             if(numeriInseriti < 25) return "DIFFICILE";
             return "MEDIO";
+        }
+        private void displaySolution(int[][] mat){
+            /*
+             * Metodo per la visualizzazione delle soluzioni
+             * */
+            for(int i = 0; i < SIZE; i++)
+                for(int j = 0; j < SIZE; j++)
+                    iniziale[i][j].setText("" + mat[i][j]);
         }
     }
 }
