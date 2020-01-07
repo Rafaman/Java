@@ -281,7 +281,7 @@ class GUI{
                             fileSalvataggio = fileChooser.getSelectedFile();
                         if( fileSalvataggio != null ){
                             save( fileSalvataggio.getAbsolutePath() );
-                            setTitle(getTitle() + " ~ " + fileSalvataggio.getAbsolutePath());
+                            setTitle("Sudoku" + " ~ " + fileSalvataggio.getAbsolutePath());
                         }
                         else
                             JOptionPane.showMessageDialog(null,"Nessun salvataggio!");
@@ -299,7 +299,7 @@ class GUI{
                             fileSalvataggio = chooser.getSelectedFile();
                         if( fileSalvataggio != null ){
                             save( fileSalvataggio.getAbsolutePath() );
-                            setTitle(getTitle() + " ~ " + fileSalvataggio.getAbsolutePath());
+                            setTitle("Sudoku" + " ~ " + fileSalvataggio.getAbsolutePath());
                         }
                         else
                             JOptionPane.showMessageDialog(null,"Nessun salvataggio!");
@@ -320,7 +320,7 @@ class GUI{
                                 fileSalvataggio = chooser.getSelectedFile();
                                 try{
                                     load(fileSalvataggio.getAbsolutePath());
-                                    setTitle(getTitle() + " ~ " + fileSalvataggio.getAbsolutePath());
+                                    setTitle("Sudoku" + " ~ " + fileSalvataggio.getAbsolutePath());
                                 } catch (IOException ioe){
                                     JOptionPane.showMessageDialog(null, "Impossibile aprire. File malformato!", "Errore", JOptionPane.ERROR_MESSAGE);
                                 }
@@ -358,11 +358,17 @@ class GUI{
                 if(e.getSource() == risolvi){
                     for(int i = 0; i < SIZE; i++)
                         for(int j = 0; j < SIZE; j++)
-                            if(iniziale[i][j].getText().equals(""))
+                            if (iniziale[i][j].getText().equals(""))
                                 impostata[i][j] = 0;
-                            else if(iniziale[i][j].getText().matches("[1-9]")) {
-                                impostata[i][j] = Integer.parseInt(iniziale[i][j].getText());
-                                numeriInseriti++;
+                            else if (iniziale[i][j].getText().matches("[1-9]")) {
+                                if(assegnabile(i, j, Integer.parseInt(iniziale[i][j].getText()))) {
+                                    impostata[i][j] = Integer.parseInt(iniziale[i][j].getText());
+                                    numeriInseriti++;
+                                } else {
+                                    JOptionPane.showMessageDialog(null, "Numeri non corretti", "Error", JOptionPane.ERROR_MESSAGE);
+                                    pulisci.doClick();
+                                    return;
+                                }
                             }
                     Sudoku s = new Sudoku(impostata);
                     s.risolvi();
@@ -377,7 +383,7 @@ class GUI{
                     panelDati.add(label2);
                     panelDati.setBorder(BorderFactory.createEmptyBorder(0, 60, 40, 0));
                     risolvi.setEnabled(false);
-                    displaySolution(soluzioni.get(0));
+                    if(soluzioni.size() > 0) displaySolution(soluzioni.get(0));
                     Finestra.this.validate();
                 }
                 /*
@@ -471,9 +477,11 @@ class GUI{
                     row++;
                 } catch (InputMismatchException ime){
                     JOptionPane.showMessageDialog(null, "Errore contenuto file, un numero non e' compreso tra 0 e 9 ", "Error", JOptionPane.ERROR_MESSAGE);
+                    pulisci.doClick();
                     return;
                 } catch (Exception e){
-                    JOptionPane.showMessageDialog(null, "Errore lettura file" + e, "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Errore lettura file", "Error", JOptionPane.ERROR_MESSAGE);
+                    pulisci.doClick();
                     return;
                 }
         }
@@ -492,6 +500,29 @@ class GUI{
             for(int i = 0; i < SIZE; i++)
                 for(int j = 0; j < SIZE; j++)
                     iniziale[i][j].setText("" + mat[i][j]);
+        }
+        private boolean assegnabile(int row, int col, int v){
+            /*
+             * Controlla se il valore v è assegnabile ad una cella <i,j>
+             * */
+            if(impostata[row][col] != 0) return false;
+            for(int j = 0; j < SIZE; j++)
+                if(impostata[row][j] == v) return false;
+            for(int i = 0; i < SIZE; i++)
+                if(impostata[i][col] == v) return false;
+            return checkSottoMatrici(row, col, v);
+        }
+        private boolean checkSottoMatrici(int row, int col, int v){
+            /*
+             * Metodo per il controllo della presenza di v nelle sottomatrici 3x3 del sudoku
+             * */
+            int boxRow = row - row % 3, boxCol = col - col % 3;
+
+            for (int i = 0; i < 3; i++)
+                for (int j = 0; j < 3; j++)
+                    if (impostata[boxRow + i][boxCol + j] == v)
+                        return false;
+            return true;
         }
     }
 }

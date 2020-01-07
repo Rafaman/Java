@@ -3,12 +3,14 @@ package poo.ricorsione;
 import java.util.Iterator;
 import poo.util.didattica.*;
 
-public abstract class ABR<T extends Comparable<? super T>> implements CollezioneOrdinata<T> {
+public class ABR<T extends Comparable<? super T>> implements CollezioneOrdinata<T> {
 	private static class Nodo<E>{
 		E info;
 		Nodo<E> fS, fD;
 	}
+
 	private Nodo<T> radice = null;
+
 	public int size() {
 		return size(radice);
 	}
@@ -16,9 +18,11 @@ public abstract class ABR<T extends Comparable<? super T>> implements Collezione
 		if(radice==null) return 0;
 		return 1+size(radice.fS)+size(radice.fD);
 	}
+
 	public void clear() {
 		radice=null;
 	}
+
 	public boolean contains(T e) {
 		return contains(radice,e);
 	}
@@ -29,15 +33,9 @@ public abstract class ABR<T extends Comparable<? super T>> implements Collezione
 			return contains(radice.fS,e);
 		return contains(radice.fD, e);
 	}
+
 	public T get(T e) {
 		return get(radice,e);
-	}
-	public boolean isEmpty() {
-		if(radice==null) return true;
-		return false;
-	}
-	public boolean isFull() {
-		return false;
 	}
 	private T get(Nodo<T> radice, T e) {
 		if(radice==null) return null;
@@ -46,12 +44,20 @@ public abstract class ABR<T extends Comparable<? super T>> implements Collezione
 			return get(radice.fS,e);
 		return get(radice.fD, e);
 	}
+
+	public boolean isEmpty() {
+		return radice == null;
+	}
+	public boolean isFull() {
+		return false;
+	}
+
 	public void add(T e) {
 		radice = add(radice, e);
 	}
 	private Nodo<T> add(Nodo<T> radice, T e){
 		if(radice == null) {
-			Nodo<T> n = new Nodo<>();
+			radice = new Nodo<>();
 			radice.info = e;
 			radice.fS=null;
 			radice.fD=null;
@@ -62,12 +68,31 @@ public abstract class ABR<T extends Comparable<? super T>> implements Collezione
 			return radice;
 		}
 		radice.fS=add(radice.fD,e);
+		if(!bilanciato()) bilancia();
 		return radice;
 	}
+
+	private boolean bilanciato(){
+		int radiciFD, radiciFS;
+		radiciFD = countRadici(radice.fD);
+		radiciFS = countRadici(radice.fS);
+		return radiciFD == radiciFS;
+	}
+	private int countRadici(Nodo<T> radice){
+		int conta = 0;
+		if(radice == null) return 0;
+		conta = 1 + countRadici(radice.fD);
+		conta = 1 + countRadici(radice.fS);
+		return conta;
+	}
+	private void bilancia(){
+
+	}
+
 	public void addIte(T e) {
 		boolean flag=false;
 		Nodo<T> padre = null, figlio = null;
-		while(figlio!=null) {
+		while(figlio == null) {
 			if(figlio.info.compareTo(e)>0) {
 				padre=figlio; figlio=figlio.fS;
 				flag = true;
@@ -86,6 +111,7 @@ public abstract class ABR<T extends Comparable<? super T>> implements Collezione
 			else padre.fD=n;
 		}
 	}
+
 	public void remove(T e) {
 		radice = remove(radice,e);
 	}
@@ -126,6 +152,7 @@ public abstract class ABR<T extends Comparable<? super T>> implements Collezione
 		padre.fS= figlio.fD;
 		return radice;
 	}
+
 	public void visitaSimmetrica() {
 		visitaSimmetrica(radice);
 	}
@@ -136,21 +163,38 @@ public abstract class ABR<T extends Comparable<? super T>> implements Collezione
 			visitaSimmetrica(radice.fD);
 		}
 	}
+
+
 	public String toString() {
-		List<T> l = (List<T>)new LinkedList();
-		visitaSimmetrica((Nodo<T>) l);
-		String s = "[ ";
-		s = s+ l.toString();
-		return s;
+		StringBuilder sb=new StringBuilder(200);
+		sb.append('[');
+		toString( radice, sb );
+		if( sb.length()>0 ) sb.setLength( sb.length()-2 );
+		sb.append(']');
+		return sb.toString();
 	}
+	private void toString( Nodo<T> radice, StringBuilder sb ){
+		if( radice==null ) return;
+		toString( radice.fS, sb );
+		sb.append( radice.info );
+		sb.append(", ");
+		toString( radice.fD, sb );
+	}//toString
+
+	public Iterator<T> iterator(){
+		return new ABRIterator();
+	}
+
 	private class ABRIterator implements Iterator<T>{
+		private T cor = null;
+		private Iterator<T> it = null;
+
 		List<T> l = new LinkedList();
 		public ABRIterator() {
 			visitaSimmetrica((Nodo<T>) l);
 			it = l.iterator();
 		}
-		private T cor = null;
-		private Iterator<T> it = null;
+
 		public boolean hasNext() {
 			return it.hasNext();
 		}

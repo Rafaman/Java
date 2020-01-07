@@ -1,6 +1,4 @@
-package poo.util;
-
-import poo.util.didattica.CollezioneOrdinata;
+package poo.util.didattica;
 
 public abstract class ListaRecurs<T extends Comparable<? super T >> implements CollezioneOrdinata<T>{
 	private static class Lista<E> {//nodo
